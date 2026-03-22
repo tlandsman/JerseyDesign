@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and Access** - Database schema, phase state machine, and shared link access
 - [x] **Phase 2: Submission System** - Image upload with anonymity, gallery view, and submission limits
-- [ ] **Phase 3: Voting and Results** - Drag-and-drop voting, RCV algorithm, results display, and admin controls
+- [ ] **Phase 3: Voting and Results** - Tap-to-rank voting, RCV algorithm, results display, and admin controls
 
 ## Phase Details
 
@@ -63,10 +63,12 @@ Plans:
   7. After Round 2 ends, users see the winning design with RCV elimination breakdown
   8. Admin can delete any submitted design
   9. Admin can reset voting rounds (clear all votes for a fresh start)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — Database schema for votes/results, RCV algorithm, admin reset controls
+- [ ] 03-02-PLAN.md — Voting UI with tap-to-rank gallery, rank badges, vote summary
+- [ ] 03-03-PLAN.md — Results display for finalists and winner, hero messaging updates
 
 ## Progress
 
@@ -77,7 +79,7 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. Foundation and Access | 2/2 | Complete | 2026-03-22 |
 | 2. Submission System | 3/3 | Complete | 2026-03-22 |
-| 3. Voting and Results | 0/? | Not started | - |
+| 3. Voting and Results | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-22*
