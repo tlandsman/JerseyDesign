@@ -106,9 +106,16 @@ export function VotingGallery({
 
   return (
     <div>
-      <p className="text-center text-muted-foreground mb-4">
-        {getInstructionText()}
-      </p>
+      <div className="text-center mb-4">
+        <p className="text-muted-foreground">
+          {getInstructionText()}
+        </p>
+        {!hasVoted && rankedDesigns.length === 0 && (
+          <p className="text-sm text-muted-foreground mt-1">
+            1st choice = 3 pts, 2nd = 2 pts, 3rd = 1 pt
+          </p>
+        )}
+      </div>
 
       <DesignLightbox>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
