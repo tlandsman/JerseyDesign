@@ -12,7 +12,7 @@ interface DesignUploadProps {
   maxDesigns?: number;
 }
 
-export function DesignUpload({ currentCount, maxDesigns = 2 }: DesignUploadProps) {
+export function DesignUpload({ currentCount, maxDesigns = 3 }: DesignUploadProps) {
   const { token, name, setName, isLoaded } = useSubmitter();
   const [nameInput, setNameInput] = useState(name);
   const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");

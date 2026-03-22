@@ -4,7 +4,7 @@ import { Phase } from "@/db/schema";
 const phaseMessages: Record<Phase, { title: string; subtitle: string }> = {
   submit: {
     title: "Submit Your Designs!",
-    subtitle: "Submit up to 2 jersey designs for team",
+    subtitle: "Submit up to 3 jersey designs for team",
   },
   round1: {
     title: "Vote for Your Favorites!",
