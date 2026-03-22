@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/lib/uploadthing";
 import { useSubmitter } from "@/components/submitter-provider";
 import { createDesignAction } from "@/actions/design-actions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Upload, Check, AlertCircle } from "lucide-react";
+import { Upload, Check, AlertCircle, Loader2 } from "lucide-react";
 
 interface DesignUploadProps {
   currentCount: number;
@@ -83,18 +83,24 @@ export function DesignUpload({ currentCount, maxDesigns = 2 }: DesignUploadProps
               Enter your name above to enable uploads
             </p>
           </div>
+        ) : uploadStatus === "uploading" ? (
+          <div className="py-8 text-center border-2 border-dashed rounded-lg">
+            <Loader2 className="h-8 w-8 mx-auto mb-2 animate-spin text-primary" />
+            <p className="text-muted-foreground">Uploading...</p>
+          </div>
         ) : (
           /* D-01: Drag-and-drop zone with click to browse fallback */
-          /* D-02: Preview with confirm handled by UploadThing's manual mode */
-          /* D-04: Progress bar during upload (built into UploadDropzone) */
           <UploadDropzone
             endpoint="designUploader"
+            config={{ mode: "auto" }}
             onClientUploadComplete={async (res) => {
               if (res && res[0]) {
                 // Save name before creating design
                 setName(nameInput.trim());
                 // Create design record via Server Action
-                await createDesignAction(res[0].ufsUrl, nameInput.trim(), token!);
+                // serverData.url contains the EXIF-stripped image URL
+                const imageUrl = res[0].serverData?.url || res[0].ufsUrl;
+                await createDesignAction(imageUrl, nameInput.trim(), token!);
                 setUploadStatus("success");
                 // Reset after delay
                 setTimeout(() => setUploadStatus("idle"), 2000);
@@ -108,11 +114,11 @@ export function DesignUpload({ currentCount, maxDesigns = 2 }: DesignUploadProps
               setUploadStatus("uploading");
             }}
             appearance={{
-              container: "border-2 border-dashed rounded-lg p-4 cursor-pointer hover:border-primary transition-colors",
-              uploadIcon: "text-muted-foreground",
-              label: "text-foreground",
-              allowedContent: "text-muted-foreground text-xs",
-              button: "bg-primary text-primary-foreground hover:bg-primary/90",
+              container: "border-2 border-dashed rounded-lg p-6 cursor-pointer hover:border-primary transition-colors",
+              uploadIcon: "text-muted-foreground h-10 w-10",
+              label: "text-foreground text-lg",
+              allowedContent: "text-muted-foreground text-sm mt-2",
+              button: "bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 text-base font-medium mt-4",
             }}
           />
         )}

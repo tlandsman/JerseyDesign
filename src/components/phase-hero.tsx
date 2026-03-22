@@ -4,7 +4,7 @@ import { Phase } from "@/db/schema";
 const phaseMessages: Record<Phase, { title: string; subtitle: string }> = {
   submit: {
     title: "Submit Your Designs!",
-    subtitle: "Share your jersey ideas with the team",
+    subtitle: "Submit up to 2 jersey designs for team",
   },
   round1: {
     title: "Vote for Your Favorites!",
@@ -27,8 +27,11 @@ export async function PhaseHero() {
   return (
     <div className="text-center py-16 px-4">
       <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-        {message.title}
+        Primed Ultimate
       </h1>
+      <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
+        {message.title}
+      </h2>
       <p className="text-xl text-muted-foreground mt-4 max-w-md mx-auto">
         {message.subtitle}
       </p>

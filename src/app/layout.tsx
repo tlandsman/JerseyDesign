@@ -32,8 +32,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <SubmitterProvider>
           <header className="border-b">
-            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-              <h1 className="text-2xl font-bold">Primed</h1>
+            <div className="container mx-auto px-4 py-4 flex items-center justify-end">
               <PhaseIndicator />
             </div>
           </header>

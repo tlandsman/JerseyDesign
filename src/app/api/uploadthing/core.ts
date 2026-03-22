@@ -18,16 +18,20 @@ export const ourFileRouter = {
       const response = await fetch(file.ufsUrl);
       const originalBuffer = Buffer.from(await response.arrayBuffer());
 
-      // 2. Process with Sharp to strip all EXIF metadata
-      // .rotate() auto-orients based on EXIF orientation tag before stripping
-      // .toBuffer() without keepMetadata() strips all metadata by default
+      // 2. Process with Sharp: strip EXIF, resize, and compress for web
       const strippedBuffer = await sharp(originalBuffer)
-        .rotate() // Auto-orient based on EXIF, prevents rotated images
+        .rotate() // Auto-orient based on EXIF before stripping
+        .resize(1200, 1200, {
+          fit: "inside", // Maintain aspect ratio, max 1200px on longest side
+          withoutEnlargement: true // Don't upscale small images
+        })
+        .jpeg({ quality: 80 }) // Compress as JPEG at 80% quality
         .toBuffer();
 
-      // 3. Upload the processed (EXIF-stripped) image
-      const blob = new Blob([strippedBuffer], { type: file.type });
-      const processedFile = new File([blob], file.name, { type: file.type });
+      // 3. Upload the processed image (always JPEG after compression)
+      const fileName = file.name.replace(/\.[^.]+$/, ".jpg");
+      const blob = new Blob([strippedBuffer], { type: "image/jpeg" });
+      const processedFile = new File([blob], fileName, { type: "image/jpeg" });
       const uploadResult = await utapi.uploadFiles([processedFile]);
 
       if (!uploadResult[0]?.data?.ufsUrl) {
