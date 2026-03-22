@@ -1,0 +1,107 @@
+"use client";
+
+import { Design } from "@/lib/designs";
+import { Card } from "@/components/ui/card";
+import { DesignLightbox } from "@/components/design-lightbox";
+import { PhotoView } from "react-photo-view";
+import { Trophy } from "lucide-react";
+
+interface WinnerDisplayProps {
+  winnerId: number;
+  runnerUpIds: number[];
+  totalVoters: number;
+  allDesigns: Design[];
+}
+
+export function WinnerDisplay({
+  winnerId,
+  runnerUpIds,
+  totalVoters,
+  allDesigns,
+}: WinnerDisplayProps) {
+  // Sort all designs by ID for consistent numbering
+  const sortedDesigns = [...allDesigns].sort((a, b) => a.id - b.id);
+
+  // Get design number (1-indexed)
+  const getDesignNumber = (designId: number) => {
+    return sortedDesigns.findIndex((d) => d.id === designId) + 1;
+  };
+
+  const winner = allDesigns.find((d) => d.id === winnerId);
+  const runnerUps = runnerUpIds
+    .map((id) => allDesigns.find((d) => d.id === id))
+    .filter((d): d is Design => d !== undefined);
+
+  if (!winner) {
+    return <div className="text-center text-muted-foreground">Winner not found</div>;
+  }
+
+  return (
+    <div>
+      {/* D-11: Hero winner card */}
+      <div className="max-w-2xl mx-auto mb-8">
+        <DesignLightbox>
+          <Card className="overflow-hidden">
+            <div className="aspect-[4/3] relative">
+              <PhotoView src={winner.imageUrl}>
+                <img
+                  src={winner.imageUrl}
+                  alt={`Design #${getDesignNumber(winner.id)} - Winner`}
+                  className="w-full h-full object-cover cursor-pointer"
+                />
+              </PhotoView>
+              {/* Trophy badge */}
+              <div className="absolute top-4 left-4 bg-yellow-500 text-yellow-950 px-3 py-1 rounded-full flex items-center gap-1.5 font-semibold">
+                <Trophy className="h-4 w-4" />
+                Winner
+              </div>
+            </div>
+            <div className="p-6 text-center">
+              <div className="text-2xl font-bold">
+                Design #{getDesignNumber(winner.id)}
+              </div>
+              {/* D-12: Vote count */}
+              <p className="text-muted-foreground mt-2">
+                Winner received support from {totalVoters} voter{totalVoters !== 1 ? "s" : ""}.
+              </p>
+            </div>
+          </Card>
+        </DesignLightbox>
+      </div>
+
+      {/* D-11: 2nd and 3rd shown smaller below */}
+      {runnerUps.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-center mb-4 text-muted-foreground">
+            Runner-ups
+          </h3>
+          <DesignLightbox>
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              {runnerUps.map((design, index) => (
+                <Card key={design.id} className="overflow-hidden">
+                  <div className="aspect-[4/3] relative">
+                    <PhotoView src={design.imageUrl}>
+                      <img
+                        src={design.imageUrl}
+                        alt={`Design #${getDesignNumber(design.id)}`}
+                        className="w-full h-full object-cover cursor-pointer"
+                      />
+                    </PhotoView>
+                  </div>
+                  <div className="p-3 text-center">
+                    <div className="font-medium">
+                      Design #{getDesignNumber(design.id)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {index === 0 ? "2nd Place" : "3rd Place"}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </DesignLightbox>
+        </div>
+      )}
+    </div>
+  );
+}

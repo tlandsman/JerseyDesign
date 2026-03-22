@@ -11,12 +11,12 @@ const phaseMessages: Record<Phase, { title: string; subtitle: string }> = {
     subtitle: "Pick your top 3 designs",
   },
   round2: {
-    title: "Final Vote!",
-    subtitle: "Choose the winner from the top 3",
+    title: "Pick the Winner!",
+    subtitle: "Choose from the top 3 finalists",
   },
   results: {
-    title: "And the Winner Is...",
-    subtitle: "See the winning jersey design",
+    title: "We Have a Winner!",
+    subtitle: "Our new jersey design has been chosen",
   },
 };
 
