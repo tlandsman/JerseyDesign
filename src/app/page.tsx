@@ -1,4 +1,5 @@
 import { PhaseHero } from "@/components/phase-hero";
+import { DesignUploadClient } from "@/components/design-upload-client";
 import { DesignGallery } from "@/components/design-gallery";
 import { VotingGalleryWrapper } from "@/components/voting-gallery-wrapper";
 import { WinnerDisplay } from "@/components/winner-display";
@@ -32,6 +33,13 @@ export default async function Home() {
       <PhaseHero />
 
       <div className="max-w-4xl mx-auto px-4 pb-8">
+        {/* Submit phase: upload UI */}
+        {isSubmitPhase && (
+          <div className="mb-8">
+            <DesignUploadClient totalDesigns={designs} />
+          </div>
+        )}
+
         {/* Round 1 voting */}
         {isRound1Phase && designs.length > 0 && (
           <VotingGalleryWrapper

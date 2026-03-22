@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { getPhase } from "@/lib/phase";
 import { Phase } from "@/db/schema";
-import { Button } from "@/components/ui/button";
 
 const phaseMessages: Record<Phase, { title: string; subtitle: string }> = {
   submit: {
@@ -34,16 +32,9 @@ export async function PhaseHero() {
       <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
         {message.title}
       </h2>
-      <div className="flex items-center justify-center gap-4 mt-4">
-        <p className="text-xl text-muted-foreground">
-          {message.subtitle}
-        </p>
-        {phase === "submit" && (
-          <Button asChild>
-            <Link href="/submit">Upload</Link>
-          </Button>
-        )}
-      </div>
+      <p className="text-xl text-muted-foreground mt-4 max-w-md mx-auto">
+        {message.subtitle}
+      </p>
     </div>
   );
 }
