@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, unique } from "drizzle-orm/sqlite-core";
 
 export type Phase = "submit" | "round1" | "round2" | "results";
 
@@ -14,4 +14,25 @@ export const designs = sqliteTable("designs", {
   submitterName: text("submitter_name").notNull(),
   submitterToken: text("submitter_token").notNull(),
   submittedAt: integer("submitted_at", { mode: "timestamp" }).notNull(),
+});
+
+export const votes = sqliteTable("votes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  voterToken: text("voter_token").notNull(),
+  round: text("round").$type<"round1" | "round2">().notNull(),
+  firstChoice: integer("first_choice").notNull(),
+  secondChoice: integer("second_choice").notNull(),
+  thirdChoice: integer("third_choice").notNull(),
+  submittedAt: integer("submitted_at", { mode: "timestamp" }).notNull(),
+}, (t) => [
+  unique().on(t.voterToken, t.round),
+]);
+
+export const results = sqliteTable("results", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  round: text("round").$type<"round1" | "round2">().notNull().unique(),
+  finalistIds: text("finalist_ids").notNull(),
+  totalVoters: integer("total_voters").notNull(),
+  eliminationData: text("elimination_data"),
+  computedAt: integer("computed_at", { mode: "timestamp" }).notNull(),
 });
