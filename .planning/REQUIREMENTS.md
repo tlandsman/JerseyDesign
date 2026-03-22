@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Access
 
-- [ ] **ACC-01**: User can access the app via shared link without creating an account
-- [ ] **ACC-02**: Admin has separate access to phase controls
+- [x] **ACC-01**: User can access the app via shared link without creating an account
+- [x] **ACC-02**: Admin has separate access to phase controls
 
 ### Submission
 
@@ -76,8 +76,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ACC-01 | Phase 1 | Pending |
-| ACC-02 | Phase 1 | Pending |
+| ACC-01 | Phase 1 | Complete |
+| ACC-02 | Phase 1 | Complete |
 | SUB-01 | Phase 2 | Pending |
 | SUB-02 | Phase 2 | Pending |
 | SUB-03 | Phase 2 | Pending |

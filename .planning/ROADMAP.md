@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project setup with Next.js, database schema, and phase state machine
+- [x] 01-01-PLAN.md — Project setup with Next.js, database schema, and phase state machine
 - [ ] 01-02-PLAN.md — User landing page and admin interface with phase controls
 
 ### Phase 2: Submission System
