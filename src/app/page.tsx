@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { PhaseHero } from "@/components/phase-hero";
 import { DesignGallery } from "@/components/design-gallery";
 import { VotingGalleryWrapper } from "@/components/voting-gallery-wrapper";
 import { WinnerDisplay } from "@/components/winner-display";
-import { Button } from "@/components/ui/button";
 import { getPhase } from "@/lib/phase";
 import { getDesigns } from "@/lib/designs";
 import { getResults, getPointsForRound } from "@/lib/votes";
@@ -34,15 +32,6 @@ export default async function Home() {
       <PhaseHero />
 
       <div className="max-w-4xl mx-auto px-4 pb-8">
-        {/* Submit phase: link to upload page */}
-        {isSubmitPhase && (
-          <div className="text-center mb-8">
-            <Button asChild size="lg">
-              <Link href="/submit">Submit Your Design</Link>
-            </Button>
-          </div>
-        )}
-
         {/* Round 1 voting */}
         {isRound1Phase && designs.length > 0 && (
           <VotingGalleryWrapper
