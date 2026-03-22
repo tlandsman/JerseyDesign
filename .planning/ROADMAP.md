@@ -13,7 +13,7 @@ This roadmap delivers a web app for an ultimate frisbee team to select their jer
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and Access** - Database schema, phase state machine, and shared link access
-- [ ] **Phase 2: Submission System** - Image upload with anonymity, gallery view, and submission limits
+- [x] **Phase 2: Submission System** - Image upload with anonymity, gallery view, and submission limits
 - [ ] **Phase 3: Voting and Results** - Drag-and-drop voting, RCV algorithm, results display, and admin controls
 
 ## Phase Details
@@ -47,7 +47,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — UploadThing setup, designs database table, and design CRUD operations
 - [x] 02-02-PLAN.md — Upload UI with drag-drop, name entry, and submission counter
-- [ ] 02-03-PLAN.md — Gallery display, lightbox, admin delete controls
+- [x] 02-03-PLAN.md — Gallery display, lightbox, admin delete controls
 
 ### Phase 3: Voting and Results
 **Goal**: Users can vote via ranked choice and see results after each round, controlled by admin
@@ -76,7 +76,7 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Access | 2/2 | Complete | 2026-03-22 |
-| 2. Submission System | 0/3 | Planned | - |
+| 2. Submission System | 3/3 | Complete | 2026-03-22 |
 | 3. Voting and Results | 0/? | Not started | - |
 
 ---
