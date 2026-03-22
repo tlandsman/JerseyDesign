@@ -1,9 +1,10 @@
 import { PhaseHero } from "@/components/phase-hero";
 import { DesignUploadClient } from "@/components/design-upload-client";
+import { DesignGallery } from "@/components/design-gallery";
 import { getPhase } from "@/lib/phase";
 import { getDesigns } from "@/lib/designs";
 
-export const dynamic = "force-dynamic"; // Prevent caching phase state
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const phase = await getPhase();
@@ -14,13 +15,23 @@ export default async function Home() {
     <div>
       <PhaseHero />
 
-      {isSubmitPhase && (
-        <div className="px-4 pb-8">
-          <DesignUploadClient totalDesigns={designs} />
-        </div>
-      )}
+      <div className="max-w-4xl mx-auto px-4 pb-8">
+        {isSubmitPhase && (
+          <div className="mb-8">
+            <DesignUploadClient totalDesigns={designs} />
+          </div>
+        )}
 
-      {/* Phase 2 Plan 03 will add gallery here */}
+        {/* SUB-02: Gallery visible in all phases */}
+        {designs.length > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">
+              {isSubmitPhase ? "Submitted Designs" : "Designs"}
+            </h2>
+            <DesignGallery designs={designs} isAdmin={false} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
