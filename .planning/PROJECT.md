@@ -12,14 +12,12 @@ Fair, democratic jersey selection — every team member's voice counts equally t
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Team members access the app via shared link (no accounts) — *Phase 1*
+- [x] Users can upload design photos (max 2 per person) — *Phase 2*
+- [x] Submissions are anonymous during voting — *Phase 2*
+- [x] Admin can manually advance phases (Submit → Round 1 → Round 2 → Results) — *Phase 1*
 
 ### Active
-
-- [ ] Team members access the app via shared link (no accounts)
-- [ ] Users can upload design photos (max 2 per person)
-- [ ] Submissions are anonymous during voting
-- [ ] Admin can manually advance phases (Submit → Round 1 → Round 2 → Results)
 - [ ] Round 1: Voters rank their top 3 designs, RCV narrows to 3 finalists
 - [ ] Round 2: Voters rank the 3 finalists, RCV picks the winner
 - [ ] Results shown after each round ends (not live)
@@ -71,4 +69,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after initialization*
+*Last updated: 2026-03-22 after Phase 2 completion*
