@@ -141,13 +141,11 @@ export function VotingGallery({
                       className="w-full h-full object-cover"
                     />
                   )}
-
-                  {/* Per D-02: Large overlay badge */}
-                  {isRanked && <RankBadge rank={rank} />}
                 </div>
 
-                <div className="p-3">
+                <div className="p-3 flex items-center justify-between">
                   <div className="font-medium">Design #{index + 1}</div>
+                  {isRanked && <RankBadge rank={rank} />}
                 </div>
               </Card>
             );

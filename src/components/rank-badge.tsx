@@ -7,11 +7,9 @@ interface RankBadgeProps {
 export function RankBadge({ rank }: RankBadgeProps) {
   return (
     <Badge
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                 h-16 w-16 rounded-full text-3xl font-bold
+      className="h-8 w-8 rounded-full text-lg font-bold
                  bg-primary text-primary-foreground
-                 flex items-center justify-center
-                 shadow-lg z-10"
+                 flex items-center justify-center shrink-0"
     >
       {rank}
     </Badge>
