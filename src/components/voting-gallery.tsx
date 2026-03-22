@@ -112,7 +112,7 @@ export function VotingGallery({
         </p>
         {!hasVoted && rankedDesigns.length === 0 && (
           <p className="text-sm text-muted-foreground mt-1">
-            1st choice = 3 pts, 2nd = 2 pts, 3rd = 1 pt
+            Votes are weighted: 1st choice = 3 pts, 2nd = 2 pts, 3rd = 1 pt
           </p>
         )}
       </div>
