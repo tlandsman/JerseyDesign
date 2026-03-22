@@ -4,8 +4,7 @@ import { useState } from "react";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { useSubmitter } from "@/components/submitter-provider";
 import { createDesignAction } from "@/actions/design-actions";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Upload, Check, AlertCircle, Loader2 } from "lucide-react";
+import { Check, AlertCircle, Loader2 } from "lucide-react";
 
 interface DesignUploadProps {
   currentCount: number;
@@ -30,27 +29,14 @@ export function DesignUpload({ currentCount, maxDesigns = 3 }: DesignUploadProps
 
   if (!isLoaded) {
     return (
-      <Card className="max-w-md mx-auto">
-        <CardContent className="py-8 text-center text-muted-foreground">
-          Loading...
-        </CardContent>
-      </Card>
+      <div className="py-8 text-center text-muted-foreground">
+        Loading...
+      </div>
     );
   }
 
   return (
-    <Card className="max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Upload className="h-5 w-5" />
-          Submit a Design
-        </CardTitle>
-        <CardDescription>
-          {/* D-03: Counter display for limit */}
-          You have submitted {currentCount} of {maxDesigns} designs
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="max-w-md mx-auto space-y-4">
         {/* D-08: Name entry on upload */}
         <div>
           <label htmlFor="submitter-name" className="block text-sm font-medium mb-1">
@@ -137,7 +123,6 @@ export function DesignUpload({ currentCount, maxDesigns = 3 }: DesignUploadProps
             <span>{errorMessage}</span>
           </div>
         )}
-      </CardContent>
-    </Card>
+    </div>
   );
 }
