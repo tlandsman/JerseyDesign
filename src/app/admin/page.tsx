@@ -5,7 +5,7 @@ import { ResultsDisplay } from "@/components/results-display";
 import { WinnerDisplay } from "@/components/winner-display";
 import { getPhase } from "@/lib/phase";
 import { getDesigns } from "@/lib/designs";
-import { getResults } from "@/lib/votes";
+import { getResults, getPointsForRound } from "@/lib/votes";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +22,9 @@ export default async function AdminPage() {
   const round2Results = isResultsPhase
     ? await getResults("round2")
     : null;
+  const round2Points = isResultsPhase
+    ? await getPointsForRound("round2")
+    : {};
 
   return (
     <div>
@@ -53,6 +56,7 @@ export default async function AdminPage() {
               ) || []}
               totalVoters={round2Results.totalVoters}
               allDesigns={designs}
+              points={round2Points}
             />
           </div>
         )}
