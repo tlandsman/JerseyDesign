@@ -11,6 +11,7 @@ interface WinnerDisplayProps {
   runnerUpIds: number[];
   totalVoters: number;
   allDesigns: Design[];
+  points: Record<number, number>;
 }
 
 export function WinnerDisplay({
@@ -18,6 +19,7 @@ export function WinnerDisplay({
   runnerUpIds,
   totalVoters,
   allDesigns,
+  points,
 }: WinnerDisplayProps) {
   // Sort all designs by ID for consistent numbering
   const sortedDesigns = [...allDesigns].sort((a, b) => a.id - b.id);
@@ -60,9 +62,11 @@ export function WinnerDisplay({
               <div className="text-2xl font-bold">
                 Design #{getDesignNumber(winner.id)}
               </div>
-              {/* D-12: Vote count */}
-              <p className="text-muted-foreground mt-2">
-                Winner received support from {totalVoters} voter{totalVoters !== 1 ? "s" : ""}.
+              <div className="text-xl font-semibold text-primary mt-1">
+                {points[winner.id] || 0} points
+              </div>
+              <p className="text-muted-foreground mt-2 text-sm">
+                {totalVoters} voter{totalVoters !== 1 ? "s" : ""} • 3 pts for 1st, 2 pts for 2nd, 1 pt for 3rd
               </p>
             </div>
           </Card>
@@ -92,7 +96,10 @@ export function WinnerDisplay({
                     <div className="font-medium">
                       Design #{getDesignNumber(design.id)}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm font-medium text-primary">
+                      {points[design.id] || 0} points
+                    </div>
+                    <div className="text-xs text-muted-foreground">
                       {index === 0 ? "2nd Place" : "3rd Place"}
                     </div>
                   </div>

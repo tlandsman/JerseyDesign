@@ -128,6 +128,27 @@ export async function saveResults(
 }
 
 /**
+ * Calculate points for each design in a round.
+ * 3 points for 1st choice, 2 for 2nd, 1 for 3rd.
+ */
+export async function getPointsForRound(round: "round1" | "round2"): Promise<Record<number, number>> {
+  const roundVotes = await db
+    .select()
+    .from(votes)
+    .where(eq(votes.round, round));
+
+  const points: Record<number, number> = {};
+
+  for (const vote of roundVotes) {
+    points[vote.firstChoice] = (points[vote.firstChoice] || 0) + 3;
+    points[vote.secondChoice] = (points[vote.secondChoice] || 0) + 2;
+    points[vote.thirdChoice] = (points[vote.thirdChoice] || 0) + 1;
+  }
+
+  return points;
+}
+
+/**
  * Get results for a specific round.
  */
 export async function getResults(round: "round1" | "round2"): Promise<{
