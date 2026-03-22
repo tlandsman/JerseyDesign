@@ -17,12 +17,13 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SUB-01**: User can upload design images (max 2 per person)
 - [ ] **SUB-02**: User can view gallery of all submitted designs
 - [ ] **SUB-03**: Uploaded images have EXIF metadata stripped for anonymity
-- [ ] **SUB-04**: Submissions are anonymous during voting (no names shown)
+- [ ] **SUB-04**: Submissions are anonymous during voting (no names shown to regular users)
+- [ ] **SUB-05**: Admin can see submitter name for each design
 
 ### Voting
 
-- [ ] **VOTE-01**: User can rank designs using drag-and-drop interface
-- [ ] **VOTE-02**: User selects and ranks their top 3 designs per round
+- [ ] **VOTE-01**: User can rank designs by tapping to select 1st, 2nd, 3rd choice in sequence
+- [ ] **VOTE-02**: Selected designs show their rank number (1, 2, 3) after being tapped
 - [ ] **VOTE-03**: User sees confirmation screen before submitting vote
 - [ ] **VOTE-04**: System prevents double voting via browser-based tracking
 - [ ] **VOTE-05**: Round 1 uses RCV to narrow all submissions to top 3 finalists
@@ -30,10 +31,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Results & Admin
 
-- [ ] **RES-01**: Admin can manually advance phases (Submit → Round 1 → Round 2 → Results)
+- [ ] **RES-01**: Admin can manually advance phases (Submit -> Round 1 -> Round 2 -> Results)
 - [ ] **RES-02**: Results are shown to users after each round ends
 - [ ] **RES-03**: Final winner is clearly displayed with winning design
 - [ ] **RES-04**: RCV elimination breakdown shows how winner was determined
+- [ ] **RES-05**: Admin can delete submitted designs
+- [ ] **RES-06**: Admin can reset voting rounds (clear all votes)
 
 ## v2 Requirements
 
@@ -41,8 +44,8 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Enhanced Submission
 
-- **SUB-05**: User can upload multiple image variants per design (front/back views)
-- **SUB-06**: User can add description text to their design
+- **SUB-06**: User can upload multiple image variants per design (front/back views)
+- **SUB-07**: User can add description text to their design
 
 ### Enhanced Voting
 
@@ -73,28 +76,31 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ACC-01 | — | Pending |
-| ACC-02 | — | Pending |
-| SUB-01 | — | Pending |
-| SUB-02 | — | Pending |
-| SUB-03 | — | Pending |
-| SUB-04 | — | Pending |
-| VOTE-01 | — | Pending |
-| VOTE-02 | — | Pending |
-| VOTE-03 | — | Pending |
-| VOTE-04 | — | Pending |
-| VOTE-05 | — | Pending |
-| VOTE-06 | — | Pending |
-| RES-01 | — | Pending |
-| RES-02 | — | Pending |
-| RES-03 | — | Pending |
-| RES-04 | — | Pending |
+| ACC-01 | Phase 1 | Pending |
+| ACC-02 | Phase 1 | Pending |
+| SUB-01 | Phase 2 | Pending |
+| SUB-02 | Phase 2 | Pending |
+| SUB-03 | Phase 2 | Pending |
+| SUB-04 | Phase 2 | Pending |
+| SUB-05 | Phase 2 | Pending |
+| VOTE-01 | Phase 3 | Pending |
+| VOTE-02 | Phase 3 | Pending |
+| VOTE-03 | Phase 3 | Pending |
+| VOTE-04 | Phase 3 | Pending |
+| VOTE-05 | Phase 3 | Pending |
+| VOTE-06 | Phase 3 | Pending |
+| RES-01 | Phase 3 | Pending |
+| RES-02 | Phase 3 | Pending |
+| RES-03 | Phase 3 | Pending |
+| RES-04 | Phase 3 | Pending |
+| RES-05 | Phase 3 | Pending |
+| RES-06 | Phase 3 | Pending |
 
 **Coverage:**
-- v1 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️
+- v1 requirements: 19 total
+- Mapped to phases: 19
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-22*
-*Last updated: 2026-03-22 after initial definition*
+*Last updated: 2026-03-22 after roadmap creation*
