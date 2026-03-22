@@ -66,7 +66,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Database schema for votes/results, RCV algorithm, admin reset controls
+- [x] 03-01-PLAN.md — Database schema for votes/results, RCV algorithm, admin reset controls
 - [ ] 03-02-PLAN.md — Voting UI with tap-to-rank gallery, rank badges, vote summary
 - [ ] 03-03-PLAN.md — Results display for finalists and winner, hero messaging updates
 
@@ -79,7 +79,7 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. Foundation and Access | 2/2 | Complete | 2026-03-22 |
 | 2. Submission System | 3/3 | Complete | 2026-03-22 |
-| 3. Voting and Results | 0/3 | Not started | - |
+| 3. Voting and Results | 1/3 | In Progress|  |
 
 ---
 *Roadmap created: 2026-03-22*
