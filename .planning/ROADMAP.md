@@ -26,10 +26,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. User can open the shared link and see the app without logging in
   2. App displays current phase indicator (Submit, Round 1, Round 2, or Results)
   3. Admin can access admin controls via separate admin URL
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — Project setup with Next.js, database schema, and phase state machine
+- [ ] 01-02-PLAN.md — User landing page and admin interface with phase controls
 
 ### Phase 2: Submission System
 **Goal**: Team members can upload jersey designs that are displayed anonymously in a gallery
@@ -72,7 +73,7 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Access | 0/? | Not started | - |
+| 1. Foundation and Access | 0/2 | Planned | - |
 | 2. Submission System | 0/? | Not started | - |
 | 3. Voting and Results | 0/? | Not started | - |
 
