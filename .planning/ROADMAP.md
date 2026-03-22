@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Project setup with Next.js, database schema, and phase state machine
-- [ ] 01-02-PLAN.md — User landing page and admin interface with phase controls
+- [x] 01-02-PLAN.md — User landing page and admin interface with phase controls
 
 ### Phase 2: Submission System
 **Goal**: Team members can upload jersey designs that are displayed anonymously in a gallery
