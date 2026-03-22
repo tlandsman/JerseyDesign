@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PhaseIndicator } from "@/components/phase-indicator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +30,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <header className="border-b">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Primed</h1>
+            <PhaseIndicator />
           </div>
         </header>
         <main className="container mx-auto px-4 py-8 flex-1">
