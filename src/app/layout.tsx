@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PhaseIndicator } from "@/components/phase-indicator";
 import { SubmitterProvider } from "@/components/submitter-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <SubmitterProvider>
+          <Toaster position="top-center" richColors />
           <header className="border-b">
             <div className="container mx-auto px-4 py-4 flex items-center justify-end">
               <PhaseIndicator />

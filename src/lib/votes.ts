@@ -40,6 +40,28 @@ export async function hasVoted(voterToken: string, round: "round1" | "round2"): 
 }
 
 /**
+ * Get a voter's vote for a specific round.
+ */
+export async function getVoteForUser(
+  voterToken: string,
+  round: "round1" | "round2"
+): Promise<{ firstChoice: number; secondChoice: number; thirdChoice: number } | null> {
+  const [vote] = await db
+    .select()
+    .from(votes)
+    .where(and(eq(votes.voterToken, voterToken), eq(votes.round, round)))
+    .limit(1);
+
+  if (!vote) return null;
+
+  return {
+    firstChoice: vote.firstChoice,
+    secondChoice: vote.secondChoice,
+    thirdChoice: vote.thirdChoice,
+  };
+}
+
+/**
  * Get all votes for a round as Ballot objects for RCV computation.
  */
 export async function getVotesForRound(round: "round1" | "round2"): Promise<Ballot[]> {
