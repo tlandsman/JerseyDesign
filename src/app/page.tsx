@@ -46,33 +46,14 @@ export default async function Home() {
           />
         )}
 
-        {/* Round 2: Show Round 1 results, then voting for finalists */}
+        {/* Round 2: Vote for winner among finalists */}
         {isRound2Phase && round1Results && (
-          <div>
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-center">
-                Round 1 Results: Top 3 Finalists
-              </h2>
-              <ResultsDisplay
-                finalistIds={round1Results.finalistIds}
-                totalVoters={round1Results.totalVoters}
-                allDesigns={designs}
-                showFinalistsOnly={true}
-              />
-            </div>
-
-            <div className="border-t pt-8">
-              <h2 className="text-xl font-semibold mb-4 text-center">
-                Vote for the Winner
-              </h2>
-              <VotingGalleryWrapper
-                designs={designs.filter((d) =>
-                  round1Results.finalistIds.includes(d.id)
-                )}
-                round="round2"
-              />
-            </div>
-          </div>
+          <VotingGalleryWrapper
+            designs={designs.filter((d) =>
+              round1Results.finalistIds.includes(d.id)
+            )}
+            round="round2"
+          />
         )}
 
         {/* Results phase: Show winner (D-14: Users who didn't vote see results like everyone else) */}
