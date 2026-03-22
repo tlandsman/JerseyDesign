@@ -27,6 +27,9 @@ export default async function Home() {
   const round2Points = isResultsPhase
     ? await getPointsForRound("round2")
     : {};
+  const round1Points = isResultsPhase
+    ? await getPointsForRound("round1")
+    : {};
 
   return (
     <div>
@@ -69,6 +72,19 @@ export default async function Home() {
               totalVoters={round2Results.totalVoters}
               allDesigns={designs}
               points={round2Points}
+            />
+          </div>
+        )}
+
+        {/* Results phase fallback: show round1 finalists if no round2 votes */}
+        {isResultsPhase && !round2Results && round1Results && (
+          <div>
+            <WinnerDisplay
+              winnerId={round1Results.finalistIds[0]}
+              runnerUpIds={round1Results.finalistIds.slice(1)}
+              totalVoters={round1Results.totalVoters}
+              allDesigns={designs}
+              points={round1Points}
             />
           </div>
         )}
