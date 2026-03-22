@@ -67,7 +67,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Database schema for votes/results, RCV algorithm, admin reset controls
-- [ ] 03-02-PLAN.md — Voting UI with tap-to-rank gallery, rank badges, vote summary
+- [x] 03-02-PLAN.md — Voting UI with tap-to-rank gallery, rank badges, vote summary
 - [ ] 03-03-PLAN.md — Results display for finalists and winner, hero messaging updates
 
 ## Progress

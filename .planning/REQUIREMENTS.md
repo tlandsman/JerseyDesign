@@ -22,9 +22,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Voting
 
-- [ ] **VOTE-01**: User can rank designs by tapping to select 1st, 2nd, 3rd choice in sequence
-- [ ] **VOTE-02**: Selected designs show their rank number (1, 2, 3) after being tapped
-- [ ] **VOTE-03**: User sees confirmation screen before submitting vote
+- [x] **VOTE-01**: User can rank designs by tapping to select 1st, 2nd, 3rd choice in sequence
+- [x] **VOTE-02**: Selected designs show their rank number (1, 2, 3) after being tapped
+- [x] **VOTE-03**: User sees confirmation screen before submitting vote
 - [x] **VOTE-04**: System prevents double voting via browser-based tracking
 - [x] **VOTE-05**: Round 1 uses RCV to narrow all submissions to top 3 finalists
 - [x] **VOTE-06**: Round 2 uses RCV to select single winner from 3 finalists
@@ -83,9 +83,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SUB-03 | Phase 2 | Complete |
 | SUB-04 | Phase 2 | Complete |
 | SUB-05 | Phase 2 | Complete |
-| VOTE-01 | Phase 3 | Pending |
-| VOTE-02 | Phase 3 | Pending |
-| VOTE-03 | Phase 3 | Pending |
+| VOTE-01 | Phase 3 | Complete |
+| VOTE-02 | Phase 3 | Complete |
+| VOTE-03 | Phase 3 | Complete |
 | VOTE-04 | Phase 3 | Complete |
 | VOTE-05 | Phase 3 | Complete |
 | VOTE-06 | Phase 3 | Complete |
