@@ -45,7 +45,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — UploadThing setup, designs database table, and design CRUD operations
+- [x] 02-01-PLAN.md — UploadThing setup, designs database table, and design CRUD operations
 - [ ] 02-02-PLAN.md — Upload UI with drag-drop, name entry, and submission counter
 - [ ] 02-03-PLAN.md — Gallery display, lightbox, admin delete controls
 

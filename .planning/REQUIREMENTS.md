@@ -14,9 +14,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Submission
 
-- [ ] **SUB-01**: User can upload design images (max 2 per person)
+- [x] **SUB-01**: User can upload design images (max 2 per person)
 - [ ] **SUB-02**: User can view gallery of all submitted designs
-- [ ] **SUB-03**: Uploaded images have EXIF metadata stripped for anonymity
+- [x] **SUB-03**: Uploaded images have EXIF metadata stripped for anonymity
 - [ ] **SUB-04**: Submissions are anonymous during voting (no names shown to regular users)
 - [ ] **SUB-05**: Admin can see submitter name for each design
 
@@ -78,9 +78,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ACC-01 | Phase 1 | Complete |
 | ACC-02 | Phase 1 | Complete |
-| SUB-01 | Phase 2 | Pending |
+| SUB-01 | Phase 2 | Complete |
 | SUB-02 | Phase 2 | Pending |
-| SUB-03 | Phase 2 | Pending |
+| SUB-03 | Phase 2 | Complete |
 | SUB-04 | Phase 2 | Pending |
 | SUB-05 | Phase 2 | Pending |
 | VOTE-01 | Phase 3 | Pending |
