@@ -89,11 +89,17 @@ export default async function Home() {
           </div>
         )}
 
-        {/* Submit phase gallery */}
-        {isSubmitPhase && designs.length > 0 && (
+        {/* Submit phase gallery - always show during submit phase */}
+        {isSubmitPhase && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Submitted Designs</h2>
-            <DesignGallery designs={designs} isAdmin={false} />
+            {designs.length > 0 ? (
+              <DesignGallery designs={designs} isAdmin={false} />
+            ) : (
+              <p className="text-center text-muted-foreground py-8">
+                No designs submitted yet. Be the first!
+              </p>
+            )}
           </div>
         )}
       </div>
