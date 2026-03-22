@@ -79,7 +79,7 @@ export default async function Home() {
         {/* Submit phase gallery - always show during submit phase */}
         {isSubmitPhase && (
           <div className="border rounded-lg bg-muted/50 p-6">
-            <h2 className="text-xl font-semibold mb-4">Submitted Designs</h2>
+            <h2 className="text-xl font-semibold mb-4">Current Submissions</h2>
             {designs.length > 0 ? (
               <DesignGallery designs={designs} isAdmin={false} />
             ) : (
