@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 interface VotingGalleryProps {
   designs: Design[];
-  round: "round1" | "round2" | "round3";
+  round: "round1" | "round2";
   initialHasVoted: boolean;
   initialVote?: { firstChoice: number; secondChoice: number; thirdChoice: number };
   points?: Record<number, number>;
@@ -57,8 +57,8 @@ export function VotingGallery({
         return prev.filter((id) => id !== designId);
       }
       if (prev.length >= maxSelections) {
-        // Round 2/3: replace selection. Round 1: ignore if already have 3
-        if (round === "round2" || round === "round3") {
+        // Round 2: replace selection. Round 1: ignore if already have 3
+        if (round === "round2") {
           return [designId];
         }
         return prev;
@@ -112,11 +112,9 @@ export function VotingGallery({
   // Per D-04: Brief inline instruction above gallery
   const getInstructionText = () => {
     if (hasVoted) return "Your vote has been submitted.";
-    if (round === "round2" || round === "round3") {
+    if (round === "round2") {
       if (rankedDesigns.length === 0) {
-        return round === "round3"
-          ? "Tap to select the tie breaker winner"
-          : "Tap to select the winning design";
+        return "Tap to select the winning design";
       }
       return "Ready to submit your vote!";
     }

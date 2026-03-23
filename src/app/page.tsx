@@ -5,7 +5,7 @@ import { VotingGalleryWrapper } from "@/components/voting-gallery-wrapper";
 import { WinnerDisplay } from "@/components/winner-display";
 import { getPhase } from "@/lib/phase";
 import { getDesigns } from "@/lib/designs";
-import { getResults, getPointsForRound, getTiedDesignIds } from "@/lib/votes";
+import { getResults, getPointsForRound } from "@/lib/votes";
 
 export const dynamic = "force-dynamic";
 
@@ -15,31 +15,21 @@ export default async function Home() {
   const isSubmitPhase = phase === "submit";
   const isRound1Phase = phase === "round1";
   const isRound2Phase = phase === "round2";
-  const isRound3Phase = phase === "round3";
   const isResultsPhase = phase === "results";
 
-  // Fetch results if applicable (D-13: results shown immediately when admin advances phase)
-  const round1Results = (isRound2Phase || isRound3Phase || isResultsPhase)
+  // Fetch results if applicable
+  const round1Results = (isRound2Phase || isResultsPhase)
     ? await getResults("round1")
     : null;
-  const round2Results = (isRound3Phase || isResultsPhase)
+  const round2Results = isResultsPhase
     ? await getResults("round2")
     : null;
-  const round3Results = isResultsPhase
-    ? await getResults("round3")
-    : null;
-  const round2Points = (isRound2Phase || isRound3Phase || isResultsPhase)
+  const round2Points = isResultsPhase
     ? await getPointsForRound("round2")
     : {};
-  const round3Points = isResultsPhase
-    ? await getPointsForRound("round3")
-    : {};
-  const round1Points = (isRound2Phase || isRound3Phase || isResultsPhase)
+  const round1Points = (isRound2Phase || isResultsPhase)
     ? await getPointsForRound("round1")
     : {};
-
-  // Get tied design IDs for round 3 voting and results display
-  const tiedDesignIds = (isRound3Phase || (isResultsPhase && round3Results)) ? await getTiedDesignIds() : [];
 
 
   return (
@@ -73,42 +63,8 @@ export default async function Home() {
           />
         )}
 
-        {/* Round 3: Tie breaker vote among tied designs */}
-        {isRound3Phase && tiedDesignIds.length > 0 && (
-          <div>
-            <div className="text-center mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
-              <h2 className="text-2xl font-bold text-red-800 mb-2">
-                We Have a Tie!
-              </h2>
-              <p className="text-red-700">
-                Please vote to break the tie and determine the winner.
-              </p>
-            </div>
-            <VotingGalleryWrapper
-              designs={designs.filter((d) => tiedDesignIds.includes(d.id))}
-              round="round3"
-              points={round2Points}
-            />
-          </div>
-        )}
-
-        {/* Results phase with round 3: Show winner from tie breaker */}
-        {isResultsPhase && round3Results && (
-          <div>
-            <WinnerDisplay
-              winnerId={round3Results.finalistIds[0]}
-              runnerUpIds={tiedDesignIds.length > 0
-                ? tiedDesignIds.filter((id) => id !== round3Results.finalistIds[0])
-                : round1Results?.finalistIds.filter((id) => id !== round3Results.finalistIds[0]) || []}
-              totalVoters={round3Results.totalVoters}
-              allDesigns={designs}
-              points={round3Points}
-            />
-          </div>
-        )}
-
-        {/* Results phase without round 3: Show winner from round 2 */}
-        {isResultsPhase && !round3Results && round2Results && (
+        {/* Results phase: Show winner from round 2 */}
+        {isResultsPhase && round2Results && (
           <div>
             <WinnerDisplay
               winnerId={round2Results.finalistIds[0]}

@@ -16,36 +16,27 @@ export default async function AdminPage() {
   const phase = await getPhase();
   const designs = await getDesigns();
   const isRound2Phase = phase === "round2";
-  const isRound3Phase = phase === "round3";
   const isResultsPhase = phase === "results";
 
   // Fetch results if applicable
-  const round1Results = (isRound2Phase || isRound3Phase || isResultsPhase)
+  const round1Results = (isRound2Phase || isResultsPhase)
     ? await getResults("round1")
     : null;
-  const round2Results = (isRound3Phase || isResultsPhase)
+  const round2Results = isResultsPhase
     ? await getResults("round2")
     : null;
-  const round3Results = isResultsPhase
-    ? await getResults("round3")
-    : null;
-  const round2Points = (isRound3Phase || isResultsPhase)
+  const round2Points = isResultsPhase
     ? await getPointsForRound("round2")
-    : {};
-  const round3Points = isResultsPhase
-    ? await getPointsForRound("round3")
     : {};
 
   // Fetch points for admin view
   const round1Points = await getPointsForRound("round1");
   const allRound2Points = await getPointsForRound("round2");
-  const allRound3Points = await getPointsForRound("round3");
 
   // Get vote counts
   const round1VoteCount = await getVoteCountForRound("round1");
   const round2VoteCount = await getVoteCountForRound("round2");
-  const round3VoteCount = await getVoteCountForRound("round3");
-  const totalVoteCount = round1VoteCount + round2VoteCount + round3VoteCount;
+  const totalVoteCount = round1VoteCount + round2VoteCount;
 
   return (
     <div>
@@ -72,23 +63,8 @@ export default async function AdminPage() {
           </div>
         )}
 
-        {/* Show final winner during results phase (from round 3 tie breaker) */}
-        {isResultsPhase && round3Results && (
-          <div className="mb-8">
-            <WinnerDisplay
-              winnerId={round3Results.finalistIds[0]}
-              runnerUpIds={round1Results?.finalistIds.filter(
-                (id) => id !== round3Results.finalistIds[0]
-              ) || []}
-              totalVoters={round3Results.totalVoters}
-              allDesigns={designs}
-              points={round3Points}
-            />
-          </div>
-        )}
-
-        {/* Show final winner during results phase (from round 2, no tie breaker) */}
-        {isResultsPhase && !round3Results && round2Results && (
+        {/* Show final winner during results phase */}
+        {isResultsPhase && round2Results && (
           <div className="mb-8">
             <WinnerDisplay
               winnerId={round2Results.finalistIds[0]}

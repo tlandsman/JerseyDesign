@@ -5,7 +5,6 @@ const phaseSubtitles: Record<Phase, string> = {
   submit: "Submit up to 3 jersey designs for team",
   round1: "Pick your top 3 designs",
   round2: "Select winner from finalists",
-  round3: "Tie breaker - select winner from tied designs",
   results: "Our new jersey design has been chosen",
 };
 

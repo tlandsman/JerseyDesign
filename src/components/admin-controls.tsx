@@ -8,15 +8,18 @@ export async function AdminControls() {
   const currentPhase = await getPhase();
   const nextPhase = getNextPhase(currentPhase);
 
-  // Check if there's a tie in round2 to determine button text
+  // Check if there's a tie to determine button text
   let buttonText = nextPhase ? `Advance to ${getPhaseName(nextPhase)}` : "";
-  if (currentPhase === "round2") {
-    const round2Points = await getPointsForRound("round2");
-    const pointValues = Object.values(round2Points);
+
+  if (currentPhase === "round1") {
+    const round1Points = await getPointsForRound("round1");
+    const pointValues = Object.values(round1Points);
     const maxPoints = pointValues.length > 0 ? Math.max(...pointValues) : 0;
     const designsWithMaxPoints = pointValues.filter(p => p === maxPoints).length;
     const hasTie = designsWithMaxPoints > 1;
-    buttonText = hasTie ? "Advance to Tie Breaker" : "Advance to Results";
+    buttonText = hasTie ? "Advance to Final Vote" : "Declare Winner";
+  } else if (currentPhase === "round2") {
+    buttonText = "Declare Winner";
   }
 
   return (

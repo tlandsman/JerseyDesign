@@ -1,7 +1,6 @@
 import { db } from "@/db";
 import { votes, results, VoteRound } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import type { Ballot, RCVRound } from "./rcv";
 
 export type Vote = typeof votes.$inferSelect;
 export type Result = typeof results.$inferSelect;
@@ -62,9 +61,13 @@ export async function getVoteForUser(
 }
 
 /**
- * Get all votes for a round as Ballot objects for RCV computation.
+ * Get all votes for a round.
  */
-export async function getVotesForRound(round: VoteRound): Promise<Ballot[]> {
+export async function getVotesForRound(round: VoteRound): Promise<{
+  firstChoice: number;
+  secondChoice: number;
+  thirdChoice: number;
+}[]> {
   const roundVotes = await db
     .select()
     .from(votes)
@@ -107,13 +110,13 @@ export async function resetAllVotes(): Promise<void> {
 }
 
 /**
- * Save RCV results for a round.
+ * Save results for a round.
  */
 export async function saveResults(
   round: VoteRound,
   finalistIds: number[],
   totalVoters: number,
-  eliminationData: RCVRound[]
+  eliminationData: unknown[] = []
 ): Promise<void> {
   // Delete existing results for this round (if re-computing)
   await db.delete(results).where(eq(results.round, round));
@@ -130,7 +133,7 @@ export async function saveResults(
 /**
  * Calculate points for each design in a round.
  * Round 1: 3 points for 1st choice, 2 for 2nd, 1 for 3rd.
- * Round 2/3: 1 point per vote (single choice).
+ * Round 2: 1 point per vote (single choice).
  */
 export async function getPointsForRound(round: VoteRound): Promise<Record<number, number>> {
   const roundVotes = await db
@@ -141,8 +144,8 @@ export async function getPointsForRound(round: VoteRound): Promise<Record<number
   const points: Record<number, number> = {};
 
   for (const vote of roundVotes) {
-    if (round === "round2" || round === "round3") {
-      // Round 2/3: each vote is 1 point
+    if (round === "round2") {
+      // Round 2: each vote is 1 point
       points[vote.firstChoice] = (points[vote.firstChoice] || 0) + 1;
     } else {
       // Round 1: weighted points
@@ -175,7 +178,6 @@ export async function getTiedDesignIds(): Promise<number[]> {
 export async function getResults(round: VoteRound): Promise<{
   finalistIds: number[];
   totalVoters: number;
-  eliminationData: RCVRound[];
 } | null> {
   const result = await db
     .select()
@@ -191,7 +193,6 @@ export async function getResults(round: VoteRound): Promise<{
   return {
     finalistIds: JSON.parse(r.finalistIds) as number[],
     totalVoters: r.totalVoters,
-    eliminationData: r.eliminationData ? (JSON.parse(r.eliminationData) as RCVRound[]) : [],
   };
 }
 

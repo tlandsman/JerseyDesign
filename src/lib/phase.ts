@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { appState, Phase } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export const phaseOrder: Phase[] = ["submit", "round1", "round2", "round3", "results"];
+export const phaseOrder: Phase[] = ["submit", "round1", "round2", "results"];
 
 export async function getPhase(): Promise<Phase> {
   const [state] = await db.select().from(appState).limit(1);
@@ -67,7 +67,6 @@ export function getPhaseName(phase: Phase): string {
     submit: "Submission",
     round1: "Round 1 Voting",
     round2: "Final Vote",
-    round3: "Tie Breaker",
     results: "Results",
   };
   return names[phase];

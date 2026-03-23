@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer, unique } from "drizzle-orm/sqlite-core";
 
-export type Phase = "submit" | "round1" | "round2" | "round3" | "results";
+export type Phase = "submit" | "round1" | "round2" | "results";
 
 export const appState = sqliteTable("app_state", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -16,7 +16,7 @@ export const designs = sqliteTable("designs", {
   submittedAt: integer("submitted_at", { mode: "timestamp" }).notNull(),
 });
 
-export type VoteRound = "round1" | "round2" | "round3";
+export type VoteRound = "round1" | "round2";
 
 export const votes = sqliteTable("votes", {
   id: integer("id").primaryKey({ autoIncrement: true }),

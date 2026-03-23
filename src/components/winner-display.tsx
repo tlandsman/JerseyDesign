@@ -165,40 +165,35 @@ export function WinnerDisplay({
         </DesignLightbox>
       </div>
 
-      {/* D-11: 2nd and 3rd shown smaller below */}
-      {runnerUps.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-center mb-4 text-muted-foreground">
-            Runner-ups
-          </h3>
-          <DesignLightbox>
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              {runnerUps.map((design, index) => (
-                <Card key={design.id} className="overflow-hidden">
-                  <div className="aspect-[4/3] relative">
-                    <PhotoView src={design.imageUrl}>
-                      <img
-                        src={design.imageUrl}
-                        alt={`Design #${getDesignNumber(design.id)}`}
-                        className="w-full h-full object-cover cursor-pointer"
-                      />
-                    </PhotoView>
-                  </div>
-                  <div className="p-3 text-center">
-                    <div className="font-medium">
-                      Design #{getDesignNumber(design.id)}
-                    </div>
-                    <div className="text-sm font-medium text-primary">
-                      {points[design.id] || 0} vote{(points[design.id] || 0) !== 1 ? "s" : ""}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {index === 0 ? "2nd Place" : "3rd Place"}
-                    </div>
-                  </div>
-                </Card>
+      {/* Standings */}
+      {Object.keys(points).length > 0 && (
+        <div className="max-w-md mx-auto mb-8 p-4 bg-muted/50 rounded-lg border">
+          <h3 className="font-semibold mb-3 text-center">Final Standings</h3>
+          <div className="space-y-2">
+            {Object.entries(points)
+              .map(([designId, pts]) => ({
+                designId: parseInt(designId),
+                designNum: getDesignNumber(parseInt(designId)),
+                points: pts,
+              }))
+              .sort((a, b) => b.points - a.points)
+              .map((standing, index) => (
+                <div
+                  key={standing.designId}
+                  className={`flex justify-between items-center p-2 rounded ${
+                    index === 0 ? "bg-yellow-100 font-bold" : ""
+                  }`}
+                >
+                  <span>
+                    {index + 1}. Design #{standing.designNum}
+                    {index === 0 && " 🏆"}
+                  </span>
+                  <span className="font-mono">
+                    {standing.points} pt{standing.points !== 1 ? "s" : ""}
+                  </span>
+                </div>
               ))}
-            </div>
-          </DesignLightbox>
+          </div>
         </div>
       )}
     </div>

@@ -7,7 +7,7 @@ import { useSubmitter } from "@/components/submitter-provider";
 
 interface VotingGalleryWrapperProps {
   designs: Design[];
-  round: "round1" | "round2" | "round3";
+  round: "round1" | "round2";
   points?: Record<number, number>;
 }
 
