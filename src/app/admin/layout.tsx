@@ -1,14 +1,11 @@
-import { AdminControls } from "@/components/admin-controls";
-
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen">
+    <div className="min-h-screen">
       {children}
-      <AdminControls />
     </div>
   );
 }

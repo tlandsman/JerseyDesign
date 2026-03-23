@@ -46,6 +46,15 @@ export async function getSubmitterDesignCount(submitterToken: string): Promise<n
   return submitterDesigns.length;
 }
 
+export async function getDesignById(id: number): Promise<Design | null> {
+  const [design] = await db
+    .select()
+    .from(designs)
+    .where(eq(designs.id, id))
+    .limit(1);
+  return design || null;
+}
+
 export async function deleteDesign(id: number): Promise<void> {
   await db.delete(designs).where(eq(designs.id, id));
 }

@@ -46,7 +46,6 @@ export function AdminDesignControls({ designCount }: AdminDesignControlsProps) {
             Delete All Designs
           </Button>
         ) : (
-          /* D-15: Delete All with confirmation dialog */
           <div className="space-y-3">
             <div className="flex items-start gap-2 p-3 bg-destructive/10 rounded-md">
               <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />

@@ -3,7 +3,7 @@ import { hasVoted, getVoteForUser } from "@/lib/votes";
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
-  const round = request.nextUrl.searchParams.get("round") as "round1" | "round2";
+  const round = request.nextUrl.searchParams.get("round") as "round1" | "round2" | "round3";
 
   if (!token || !round) {
     return NextResponse.json({ hasVoted: false });

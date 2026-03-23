@@ -17,18 +17,19 @@ export interface RCVResult {
 }
 
 /**
- * Run Ranked Choice Voting algorithm to select N finalists from ranked ballots.
+ * Run weighted points elimination to select N finalists from ranked ballots.
  *
  * Algorithm:
  * 1. Get all unique candidates from ballots
  * 2. While remaining > targetFinalists:
- *    a. Count first-choice votes for remaining candidates
- *    b. Find candidate with fewest votes (tie-breaker: lower ID eliminated first)
- *    c. Eliminate that candidate
- *    d. Record round data
+ *    a. Calculate weighted points for remaining candidates (3 pts 1st, 2 pts 2nd, 1 pt 3rd)
+ *    b. Find candidate(s) with fewest points
+ *    c. If only one candidate has the minimum, eliminate them
+ *    d. If multiple tied at minimum, keep all (don't eliminate anyone)
+ *    e. Record round data
  * 3. Return finalists, rounds, totalVoters
  *
- * Handles exhausted ballots (skips ballot if no remaining valid choice).
+ * Ties result in keeping all tied candidates (may have more than targetFinalists).
  */
 export function runRCV(ballots: Ballot[], targetFinalists: number): RCVResult {
   const rounds: RCVRound[] = [];
@@ -50,46 +51,55 @@ export function runRCV(ballots: Ballot[], targetFinalists: number): RCVResult {
     };
   }
 
-  while (remainingCandidates.size > targetFinalists) {
-    // Count first-choice votes for remaining candidates
-    const voteCounts: Record<number, number> = {};
+  let maxIterations = remainingCandidates.size; // Prevent infinite loops
+  while (remainingCandidates.size > targetFinalists && maxIterations > 0) {
+    maxIterations--;
+
+    // Calculate weighted points for remaining candidates
+    // 3 points for 1st choice, 2 for 2nd, 1 for 3rd
+    const pointCounts: Record<number, number> = {};
     for (const candidate of remainingCandidates) {
-      voteCounts[candidate] = 0;
+      pointCounts[candidate] = 0;
     }
 
     for (const ballot of ballots) {
-      // Find highest-ranked remaining candidate (handles exhausted ballots)
-      const choices = [ballot.firstChoice, ballot.secondChoice, ballot.thirdChoice];
-      const validChoice = choices.find(c => remainingCandidates.has(c));
-      if (validChoice !== undefined) {
-        voteCounts[validChoice] = (voteCounts[validChoice] || 0) + 1;
+      if (remainingCandidates.has(ballot.firstChoice)) {
+        pointCounts[ballot.firstChoice] += 3;
       }
-      // If no valid choice, ballot is exhausted - skip it
+      if (remainingCandidates.has(ballot.secondChoice)) {
+        pointCounts[ballot.secondChoice] += 2;
+      }
+      if (remainingCandidates.has(ballot.thirdChoice)) {
+        pointCounts[ballot.thirdChoice] += 1;
+      }
     }
 
-    // Find candidate with fewest votes (tie-breaker: lower ID)
-    let minVotes = Infinity;
+    // Find minimum points
+    const minPoints = Math.min(...Object.values(pointCounts));
+
+    // Find all candidates with the minimum points
+    const candidatesWithMinPoints = Array.from(remainingCandidates).filter(
+      (c) => pointCounts[c] === minPoints
+    );
+
     let eliminated: number | null = null;
 
-    // Sort candidates by ID for deterministic tie-breaking
-    const sortedCandidates = Array.from(remainingCandidates).sort((a, b) => a - b);
-
-    for (const candidate of sortedCandidates) {
-      const votes = voteCounts[candidate];
-      if (votes < minVotes) {
-        minVotes = votes;
-        eliminated = candidate;
-      }
+    // Only eliminate if exactly one candidate has the minimum (no tie)
+    if (candidatesWithMinPoints.length === 1) {
+      eliminated = candidatesWithMinPoints[0];
+      remainingCandidates.delete(eliminated);
     }
+    // If there's a tie at the bottom, don't eliminate anyone - keep all tied candidates
 
     rounds.push({
       roundNumber: rounds.length + 1,
-      voteCounts: { ...voteCounts },
+      voteCounts: { ...pointCounts }, // Now stores points, not first-choice counts
       eliminated,
     });
 
-    if (eliminated !== null) {
-      remainingCandidates.delete(eliminated);
+    // If we couldn't eliminate anyone (tie), stop the loop
+    if (eliminated === null) {
+      break;
     }
   }
 

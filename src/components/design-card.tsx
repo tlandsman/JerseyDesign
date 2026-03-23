@@ -13,9 +13,11 @@ interface DesignCardProps {
   designNumber: number;
   isAdmin?: boolean;
   isOwnDesign?: boolean;
+  round1Points?: number;
+  round2Points?: number;
 }
 
-export function DesignCard({ design, designNumber, isAdmin = false, isOwnDesign = false }: DesignCardProps) {
+export function DesignCard({ design, designNumber, isAdmin = false, isOwnDesign = false, round1Points, round2Points }: DesignCardProps) {
   const handleDelete = async () => {
     if (confirm(`Delete Design #${designNumber}?`)) {
       await deleteDesignAction(design.id);
@@ -44,28 +46,41 @@ export function DesignCard({ design, designNumber, isAdmin = false, isOwnDesign 
           </Badge>
         )}
 
-        {/* D-14: Individual delete button for admin */}
-        {isAdmin && (
-          <Button
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={handleDelete}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        )}
       </div>
 
       {/* Card info section */}
       <div className="p-3">
         {/* D-12: Image + submission number shown to regular users */}
-        <div className="font-medium">Design #{designNumber}</div>
+        <div className="flex items-center justify-between">
+          <span className="font-medium">Design #{designNumber}</span>
+          {(isAdmin || isOwnDesign) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
 
         {/* D-13: Submitter name visible on card for admin */}
         {isAdmin && (
           <div className="text-sm text-muted-foreground mt-1">
             by {design.submitterName}
+          </div>
+        )}
+
+        {/* Vote scores for admin */}
+        {isAdmin && (round1Points !== undefined || round2Points !== undefined) && (
+          <div className="text-sm mt-2 flex gap-3">
+            {round1Points !== undefined && (
+              <span className="text-blue-600">R1: {round1Points} pts</span>
+            )}
+            {round2Points !== undefined && (
+              <span className="text-green-600">R2: {round2Points} pts</span>
+            )}
           </div>
         )}
       </div>

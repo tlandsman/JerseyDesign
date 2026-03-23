@@ -8,9 +8,11 @@ import { useSubmitter } from "@/components/submitter-provider";
 interface DesignGalleryProps {
   designs: Design[];
   isAdmin?: boolean;
+  round1Points?: Record<number, number>;
+  round2Points?: Record<number, number>;
 }
 
-export function DesignGallery({ designs, isAdmin = false }: DesignGalleryProps) {
+export function DesignGallery({ designs, isAdmin = false, round1Points, round2Points }: DesignGalleryProps) {
   const { token, isLoaded } = useSubmitter();
 
   if (designs.length === 0) {
@@ -37,6 +39,8 @@ export function DesignGallery({ designs, isAdmin = false }: DesignGalleryProps) 
             designNumber={index + 1}
             isAdmin={isAdmin}
             isOwnDesign={isLoaded && token === design.submitterToken}
+            round1Points={round1Points?.[design.id]}
+            round2Points={round2Points?.[design.id]}
           />
         ))}
       </div>

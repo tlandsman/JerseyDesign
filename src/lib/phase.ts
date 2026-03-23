@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { appState, Phase } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export const phaseOrder: Phase[] = ["submit", "round1", "round2", "results"];
+export const phaseOrder: Phase[] = ["submit", "round1", "round2", "round3", "results"];
 
 export async function getPhase(): Promise<Phase> {
   const [state] = await db.select().from(appState).limit(1);
@@ -17,6 +17,21 @@ export async function getPhase(): Promise<Phase> {
   }
 
   return state.currentPhase;
+}
+
+export async function setPhase(phase: Phase): Promise<void> {
+  const [current] = await db.select().from(appState).limit(1);
+
+  if (current) {
+    await db.update(appState)
+      .set({ currentPhase: phase, updatedAt: new Date() })
+      .where(eq(appState.id, current.id));
+  } else {
+    await db.insert(appState).values({
+      currentPhase: phase,
+      updatedAt: new Date(),
+    });
+  }
 }
 
 export async function advancePhase(): Promise<Phase | null> {
@@ -52,6 +67,7 @@ export function getPhaseName(phase: Phase): string {
     submit: "Submission",
     round1: "Round 1 Voting",
     round2: "Final Vote",
+    round3: "Tie Breaker",
     results: "Results",
   };
   return names[phase];

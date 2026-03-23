@@ -9,13 +9,14 @@ import {
   resetAllVotes,
   getVotesForRound,
   saveResults,
+  getPointsForRound,
 } from "@/lib/votes";
 import { runRCV } from "@/lib/rcv";
-import { getPhase, advancePhase } from "@/lib/phase";
+import { getPhase, advancePhase, setPhase } from "@/lib/phase";
 
 const voteSchema = z.object({
   voterToken: z.string().uuid(),
-  round: z.enum(["round1", "round2"]),
+  round: z.enum(["round1", "round2", "round3"]),
   firstChoice: z.number().int().positive(),
   secondChoice: z.number().int().positive(),
   thirdChoice: z.number().int().positive(),
@@ -23,7 +24,7 @@ const voteSchema = z.object({
 
 export async function submitVoteAction(
   voterToken: string,
-  round: "round1" | "round2",
+  round: "round1" | "round2" | "round3",
   firstChoice: number,
   secondChoice: number,
   thirdChoice: number
@@ -89,19 +90,47 @@ export async function advancePhaseWithRCVAction(): Promise<{ success: boolean; e
       }
     }
 
-    // 3. If round2 -> results: compute RCV with target=1, save results
+    // 3. If round2: compute results and check for tie
     if (currentPhase === "round2") {
       const ballots = await getVotesForRound("round2");
       if (ballots.length > 0) {
         const rcvResult = runRCV(ballots, 1);
         await saveResults("round2", rcvResult.finalists, rcvResult.totalVoters, rcvResult.rounds);
       }
+
+      // Check if there's a tie - if multiple designs have max points
+      const round2Points = await getPointsForRound("round2");
+      const pointValues = Object.values(round2Points);
+      const maxPoints = pointValues.length > 0 ? Math.max(...pointValues) : 0;
+      const designsWithMaxPoints = Object.values(round2Points).filter(p => p === maxPoints).length;
+      const hasTie = designsWithMaxPoints > 1;
+
+      if (hasTie) {
+        // Advance to round3 (tie breaker)
+        await advancePhase();
+      } else {
+        // Skip round3, go directly to results
+        await setPhase("results");
+      }
+
+      revalidatePath("/");
+      revalidatePath("/admin");
+      return { success: true };
     }
 
-    // 4. Call advancePhase()
+    // 4. If round3 -> results: compute RCV with target=1, save results
+    if (currentPhase === "round3") {
+      const ballots = await getVotesForRound("round3");
+      if (ballots.length > 0) {
+        const rcvResult = runRCV(ballots, 1);
+        await saveResults("round3", rcvResult.finalists, rcvResult.totalVoters, rcvResult.rounds);
+      }
+    }
+
+    // 5. Call advancePhase() for other phases
     await advancePhase();
 
-    // 5. Revalidate paths
+    // 6. Revalidate paths
     revalidatePath("/");
     revalidatePath("/admin");
 
@@ -119,7 +148,7 @@ export async function advancePhaseFormAction(): Promise<void> {
   await advancePhaseWithRCVAction();
 }
 
-export async function resetRoundAction(round: "round1" | "round2"): Promise<void> {
+export async function resetRoundAction(round: "round1" | "round2" | "round3"): Promise<void> {
   await resetRoundVotes(round);
   revalidatePath("/");
   revalidatePath("/admin");

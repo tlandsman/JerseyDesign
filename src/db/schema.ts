@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer, unique } from "drizzle-orm/sqlite-core";
 
-export type Phase = "submit" | "round1" | "round2" | "results";
+export type Phase = "submit" | "round1" | "round2" | "round3" | "results";
 
 export const appState = sqliteTable("app_state", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -16,10 +16,12 @@ export const designs = sqliteTable("designs", {
   submittedAt: integer("submitted_at", { mode: "timestamp" }).notNull(),
 });
 
+export type VoteRound = "round1" | "round2" | "round3";
+
 export const votes = sqliteTable("votes", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   voterToken: text("voter_token").notNull(),
-  round: text("round").$type<"round1" | "round2">().notNull(),
+  round: text("round").$type<VoteRound>().notNull(),
   firstChoice: integer("first_choice").notNull(),
   secondChoice: integer("second_choice").notNull(),
   thirdChoice: integer("third_choice").notNull(),
@@ -30,7 +32,7 @@ export const votes = sqliteTable("votes", {
 
 export const results = sqliteTable("results", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  round: text("round").$type<"round1" | "round2">().notNull().unique(),
+  round: text("round").$type<VoteRound>().notNull().unique(),
   finalistIds: text("finalist_ids").notNull(),
   totalVoters: integer("total_voters").notNull(),
   eliminationData: text("elimination_data"),

@@ -7,10 +7,11 @@ import { useSubmitter } from "@/components/submitter-provider";
 
 interface VotingGalleryWrapperProps {
   designs: Design[];
-  round: "round1" | "round2";
+  round: "round1" | "round2" | "round3";
+  points?: Record<number, number>;
 }
 
-export function VotingGalleryWrapper({ designs, round }: VotingGalleryWrapperProps) {
+export function VotingGalleryWrapper({ designs, round, points }: VotingGalleryWrapperProps) {
   const { token, isLoaded } = useSubmitter();
   const [hasVoted, setHasVoted] = useState(false);
   const [vote, setVote] = useState<{ firstChoice: number; secondChoice: number; thirdChoice: number } | undefined>();
@@ -51,6 +52,7 @@ export function VotingGalleryWrapper({ designs, round }: VotingGalleryWrapperPro
       round={round}
       initialHasVoted={hasVoted}
       initialVote={vote}
+      points={points}
     />
   );
 }

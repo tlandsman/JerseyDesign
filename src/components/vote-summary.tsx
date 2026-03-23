@@ -10,6 +10,7 @@ interface VoteSummaryProps {
   onSubmit: () => void;
   isSubmitting: boolean;
   hasVoted: boolean;
+  round?: "round1" | "round2" | "round3";
 }
 
 export function VoteSummary({
@@ -18,6 +19,7 @@ export function VoteSummary({
   onSubmit,
   isSubmitting,
   hasVoted,
+  round = "round1",
 }: VoteSummaryProps) {
   // Map design IDs to design numbers (1-indexed position in sorted list)
   const getDesignNumber = (designId: number) => {
@@ -29,25 +31,33 @@ export function VoteSummary({
     return null;
   }
 
+  const requiredSelections = round === "round1" ? 3 : 1;
+
   if (hasVoted) {
     return (
       <Card className="mt-6">
         <CardContent className="pt-6">
           <p className="text-center font-medium">
-            You voted for:{" "}
-            {rankedDesigns.map((id, i) => (
-              <span key={id}>
-                #{i + 1} Design {getDesignNumber(id)}
-                {i < rankedDesigns.length - 1 ? ", " : ""}
-              </span>
-            ))}
+            {(round === "round2" || round === "round3") ? (
+              <>You voted for Design #{getDesignNumber(rankedDesigns[0])}</>
+            ) : (
+              <>
+                You voted for:{" "}
+                {rankedDesigns.map((id, i) => (
+                  <span key={id}>
+                    #{i + 1} Design {getDesignNumber(id)}
+                    {i < rankedDesigns.length - 1 ? ", " : ""}
+                  </span>
+                ))}
+              </>
+            )}
           </p>
         </CardContent>
       </Card>
     );
   }
 
-  const isComplete = rankedDesigns.length === 3;
+  const isComplete = rankedDesigns.length === requiredSelections;
 
   return (
     <Card className="mt-6">
@@ -55,17 +65,23 @@ export function VoteSummary({
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="font-medium">
-              Your vote:{" "}
-              {rankedDesigns.map((id, i) => (
-                <span key={id}>
-                  #{i + 1} Design {getDesignNumber(id)}
-                  {i < rankedDesigns.length - 1 ? ", " : ""}
-                </span>
-              ))}
-              {rankedDesigns.length < 3 && (
-                <span className="text-muted-foreground">
-                  {" "}(select {3 - rankedDesigns.length} more)
-                </span>
+              {(round === "round2" || round === "round3") ? (
+                <>Your vote: Design #{getDesignNumber(rankedDesigns[0])}</>
+              ) : (
+                <>
+                  Your vote:{" "}
+                  {rankedDesigns.map((id, i) => (
+                    <span key={id}>
+                      #{i + 1} Design {getDesignNumber(id)}
+                      {i < rankedDesigns.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+                  {rankedDesigns.length < 3 && (
+                    <span className="text-muted-foreground">
+                      {" "}(select {3 - rankedDesigns.length} more)
+                    </span>
+                  )}
+                </>
               )}
             </p>
             <p className="text-sm text-muted-foreground mt-1">

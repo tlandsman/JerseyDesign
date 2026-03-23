@@ -3,8 +3,9 @@
 import { Design } from "@/lib/designs";
 import { Card } from "@/components/ui/card";
 import { DesignLightbox } from "@/components/design-lightbox";
+import { Confetti } from "@/components/confetti";
 import { PhotoView } from "react-photo-view";
-import { Trophy } from "lucide-react";
+import { Trophy, AlertTriangle } from "lucide-react";
 
 interface WinnerDisplayProps {
   winnerId: number;
@@ -34,12 +35,103 @@ export function WinnerDisplay({
     .map((id) => allDesigns.find((d) => d.id === id))
     .filter((d): d is Design => d !== undefined);
 
+  // Check for tie: does any runner-up have the same points as the winner?
+  const winnerPoints = points[winnerId] || 0;
+  const isTie = runnerUps.some((d) => (points[d.id] || 0) === winnerPoints);
+
   if (!winner) {
     return <div className="text-center text-muted-foreground">Winner not found</div>;
   }
 
+  // Get all tied designs for tie display
+  const tiedDesigns = isTie
+    ? [winner, ...runnerUps.filter((d) => (points[d.id] || 0) === winnerPoints)].filter(
+        (d): d is Design => d !== undefined
+      )
+    : [];
+
+  if (isTie) {
+    return (
+      <div>
+        {/* Tie warning */}
+        <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center gap-2 text-red-800">
+            <AlertTriangle className="h-5 w-5" />
+            <span className="font-semibold">Tie Detected!</span>
+          </div>
+          <p className="text-red-700 mt-1">
+            A tie breaker voting round is needed to determine the winner.
+          </p>
+        </div>
+
+        {/* Show tied designs */}
+        <h3 className="text-lg font-semibold text-center mb-4">
+          Tied Designs ({winnerPoints} vote{winnerPoints !== 1 ? "s" : ""} each)
+        </h3>
+        <DesignLightbox>
+          <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+            {tiedDesigns.map((design) => (
+              <Card key={design.id} className="overflow-hidden">
+                <div className="aspect-[4/3] relative">
+                  <PhotoView src={design.imageUrl}>
+                    <img
+                      src={design.imageUrl}
+                      alt={`Design #${getDesignNumber(design.id)}`}
+                      className="w-full h-full object-cover cursor-pointer"
+                    />
+                  </PhotoView>
+                </div>
+                <div className="p-3 text-center">
+                  <div className="font-medium">Design #{getDesignNumber(design.id)}</div>
+                  <div className="text-sm font-medium text-primary">
+                    {points[design.id] || 0} vote{(points[design.id] || 0) !== 1 ? "s" : ""}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </DesignLightbox>
+
+        {/* Show non-tied runner-ups */}
+        {runnerUps.filter((d) => (points[d.id] || 0) !== winnerPoints).length > 0 && (
+          <div className="mt-8 border rounded-lg bg-muted/50 p-6">
+            <h3 className="text-lg font-semibold text-center mb-4 text-muted-foreground">
+              Other Finalists
+            </h3>
+            <DesignLightbox>
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                {runnerUps
+                  .filter((d) => (points[d.id] || 0) !== winnerPoints)
+                  .map((design) => (
+                    <Card key={design.id} className="overflow-hidden">
+                      <div className="aspect-[4/3] relative">
+                        <PhotoView src={design.imageUrl}>
+                          <img
+                            src={design.imageUrl}
+                            alt={`Design #${getDesignNumber(design.id)}`}
+                            className="w-full h-full object-cover cursor-pointer"
+                          />
+                        </PhotoView>
+                      </div>
+                      <div className="p-3 text-center">
+                        <div className="font-medium">Design #{getDesignNumber(design.id)}</div>
+                        <div className="text-sm font-medium text-primary">
+                          {points[design.id] || 0} vote{(points[design.id] || 0) !== 1 ? "s" : ""}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+              </div>
+            </DesignLightbox>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
+      <Confetti />
       {/* D-11: Hero winner card */}
       <div className="max-w-2xl mx-auto mb-8">
         <DesignLightbox>
@@ -63,10 +155,10 @@ export function WinnerDisplay({
                 Design #{getDesignNumber(winner.id)}
               </div>
               <div className="text-xl font-semibold text-primary mt-1">
-                {points[winner.id] || 0} points
+                {points[winner.id] || 0} vote{(points[winner.id] || 0) !== 1 ? "s" : ""}
               </div>
               <p className="text-muted-foreground mt-2 text-sm">
-                {totalVoters} voter{totalVoters !== 1 ? "s" : ""} • 3 pts for 1st, 2 pts for 2nd, 1 pt for 3rd
+                {totalVoters} voter{totalVoters !== 1 ? "s" : ""}
               </p>
             </div>
           </Card>
@@ -97,7 +189,7 @@ export function WinnerDisplay({
                       Design #{getDesignNumber(design.id)}
                     </div>
                     <div className="text-sm font-medium text-primary">
-                      {points[design.id] || 0} points
+                      {points[design.id] || 0} vote{(points[design.id] || 0) !== 1 ? "s" : ""}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {index === 0 ? "2nd Place" : "3rd Place"}

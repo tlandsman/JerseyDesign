@@ -13,9 +13,10 @@ import { toast } from "sonner";
 
 interface VotingGalleryProps {
   designs: Design[];
-  round: "round1" | "round2";
+  round: "round1" | "round2" | "round3";
   initialHasVoted: boolean;
   initialVote?: { firstChoice: number; secondChoice: number; thirdChoice: number };
+  points?: Record<number, number>;
 }
 
 export function VotingGallery({
@@ -23,6 +24,7 @@ export function VotingGallery({
   round,
   initialHasVoted,
   initialVote,
+  points,
 }: VotingGalleryProps) {
   const { token } = useSubmitter();
   const [rankedDesigns, setRankedDesigns] = useState<number[]>([]);
@@ -40,6 +42,9 @@ export function VotingGallery({
     }
   }, [initialVote, initialHasVoted]);
 
+  // Max selections: 3 for round1, 1 for round2/round3
+  const maxSelections = round === "round1" ? 3 : 1;
+
   // Per D-01: Tap to rank in sequence
   // Per D-03: Tap ranked design to unrank, remaining shift up
   const handleDesignClick = (designId: number) => {
@@ -51,8 +56,11 @@ export function VotingGallery({
         // Already ranked - remove and shift others up (D-03)
         return prev.filter((id) => id !== designId);
       }
-      if (prev.length >= 3) {
-        // Already have 3 - ignore tap
+      if (prev.length >= maxSelections) {
+        // Round 2/3: replace selection. Round 1: ignore if already have 3
+        if (round === "round2" || round === "round3") {
+          return [designId];
+        }
         return prev;
       }
       // Add as next rank
@@ -67,16 +75,22 @@ export function VotingGallery({
 
   // Per D-07: After submit, success toast, gallery stays visible but disabled
   const handleSubmit = async () => {
-    if (!token || rankedDesigns.length !== 3) return;
+    const requiredSelections = round === "round1" ? 3 : 1;
+    if (!token || rankedDesigns.length !== requiredSelections) return;
 
     setIsSubmitting(true);
     try {
+      // For round 2, use the single choice for all fields
+      const first = rankedDesigns[0];
+      const second = round === "round1" ? rankedDesigns[1] : rankedDesigns[0];
+      const third = round === "round1" ? rankedDesigns[2] : rankedDesigns[0];
+
       const result = await submitVoteAction(
         token,
         round,
-        rankedDesigns[0],
-        rankedDesigns[1],
-        rankedDesigns[2]
+        first,
+        second,
+        third
       );
 
       if (result.success) {
@@ -98,6 +112,15 @@ export function VotingGallery({
   // Per D-04: Brief inline instruction above gallery
   const getInstructionText = () => {
     if (hasVoted) return "Your vote has been submitted.";
+    if (round === "round2" || round === "round3") {
+      if (rankedDesigns.length === 0) {
+        return round === "round3"
+          ? "Tap to select the tie breaker winner"
+          : "Tap to select the winning design";
+      }
+      return "Ready to submit your vote!";
+    }
+    // Round 1
     if (rankedDesigns.length === 0) return "Tap designs to rank your top 3 choices";
     if (rankedDesigns.length === 1) return "Tap 2 more designs to complete your ranking";
     if (rankedDesigns.length === 2) return "Tap 1 more design to complete your ranking";
@@ -110,14 +133,52 @@ export function VotingGallery({
         <p className="text-muted-foreground">
           {getInstructionText()}
         </p>
-        {!hasVoted && rankedDesigns.length === 0 && (
+        {!hasVoted && rankedDesigns.length === 0 && round === "round1" && (
           <p className="text-sm text-muted-foreground mt-1">
             Votes are weighted: 1st choice = 3 pts, 2nd = 2 pts, 3rd = 1 pt
           </p>
         )}
       </div>
 
-      <DesignLightbox>
+      {hasVoted ? (
+        <DesignLightbox>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sortedDesigns.map((design, index) => {
+              const rank = getRank(design.id);
+              const isRanked = rank !== null;
+
+              return (
+                <Card
+                  key={design.id}
+                  className={`overflow-hidden group relative cursor-default ${isRanked ? "ring-2 ring-primary" : ""}`}
+                >
+                  <div className="aspect-[4/3] relative">
+                    <PhotoView src={design.imageUrl}>
+                      <img
+                        src={design.imageUrl}
+                        alt={`Design #${index + 1}`}
+                        className="w-full h-full object-cover cursor-pointer"
+                      />
+                    </PhotoView>
+                  </div>
+
+                  <div className="p-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Design #{index + 1}</span>
+                      {points && (
+                        <span className="text-sm text-muted-foreground">
+                          ({points[design.id] || 0} pts)
+                        </span>
+                      )}
+                    </div>
+                    {isRanked && <RankBadge rank={rank} />}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </DesignLightbox>
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortedDesigns.map((design, index) => {
             const rank = getRank(design.id);
@@ -126,39 +187,33 @@ export function VotingGallery({
             return (
               <Card
                 key={design.id}
-                className={`overflow-hidden group relative cursor-pointer transition-all ${
-                  hasVoted ? "cursor-default" : ""
-                } ${isRanked ? "ring-2 ring-primary" : ""}`}
+                className={`overflow-hidden group relative cursor-pointer transition-all ${isRanked ? "ring-2 ring-primary" : ""}`}
                 onClick={() => handleDesignClick(design.id)}
               >
                 <div className="aspect-[4/3] relative">
-                  {/* Image - PhotoView only active when hasVoted (prevents accidental lightbox during voting) */}
-                  {hasVoted ? (
-                    <PhotoView src={design.imageUrl}>
-                      <img
-                        src={design.imageUrl}
-                        alt={`Design #${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </PhotoView>
-                  ) : (
-                    <img
-                      src={design.imageUrl}
-                      alt={`Design #${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <img
+                    src={design.imageUrl}
+                    alt={`Design #${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 <div className="p-3 flex items-center justify-between">
-                  <div className="font-medium">Design #{index + 1}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Design #{index + 1}</span>
+                    {points && (
+                      <span className="text-sm text-muted-foreground">
+                        ({points[design.id] || 0} pts)
+                      </span>
+                    )}
+                  </div>
                   {isRanked && <RankBadge rank={rank} />}
                 </div>
               </Card>
             );
           })}
         </div>
-      </DesignLightbox>
+      )}
 
       <VoteSummary
         rankedDesigns={rankedDesigns}
@@ -166,6 +221,7 @@ export function VotingGallery({
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
         hasVoted={hasVoted}
+        round={round}
       />
     </div>
   );

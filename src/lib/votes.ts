@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { votes, results } from "@/db/schema";
+import { votes, results, VoteRound } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import type { Ballot, RCVRound } from "./rcv";
 
@@ -11,7 +11,7 @@ export type Result = typeof results.$inferSelect;
  */
 export async function submitVote(
   voterToken: string,
-  round: "round1" | "round2",
+  round: VoteRound,
   firstChoice: number,
   secondChoice: number,
   thirdChoice: number
@@ -29,7 +29,7 @@ export async function submitVote(
 /**
  * Check if a voter has already voted in a specific round.
  */
-export async function hasVoted(voterToken: string, round: "round1" | "round2"): Promise<boolean> {
+export async function hasVoted(voterToken: string, round: VoteRound): Promise<boolean> {
   const existingVote = await db
     .select()
     .from(votes)
@@ -44,7 +44,7 @@ export async function hasVoted(voterToken: string, round: "round1" | "round2"): 
  */
 export async function getVoteForUser(
   voterToken: string,
-  round: "round1" | "round2"
+  round: VoteRound
 ): Promise<{ firstChoice: number; secondChoice: number; thirdChoice: number } | null> {
   const [vote] = await db
     .select()
@@ -64,7 +64,7 @@ export async function getVoteForUser(
 /**
  * Get all votes for a round as Ballot objects for RCV computation.
  */
-export async function getVotesForRound(round: "round1" | "round2"): Promise<Ballot[]> {
+export async function getVotesForRound(round: VoteRound): Promise<Ballot[]> {
   const roundVotes = await db
     .select()
     .from(votes)
@@ -80,7 +80,7 @@ export async function getVotesForRound(round: "round1" | "round2"): Promise<Ball
 /**
  * Get the count of voters for a specific round.
  */
-export async function getVoteCountForRound(round: "round1" | "round2"): Promise<number> {
+export async function getVoteCountForRound(round: VoteRound): Promise<number> {
   const roundVotes = await db
     .select()
     .from(votes)
@@ -92,7 +92,7 @@ export async function getVoteCountForRound(round: "round1" | "round2"): Promise<
 /**
  * Reset votes for a specific round.
  */
-export async function resetRoundVotes(round: "round1" | "round2"): Promise<void> {
+export async function resetRoundVotes(round: VoteRound): Promise<void> {
   await db.delete(votes).where(eq(votes.round, round));
   // Also delete results for this round if they exist
   await db.delete(results).where(eq(results.round, round));
@@ -110,7 +110,7 @@ export async function resetAllVotes(): Promise<void> {
  * Save RCV results for a round.
  */
 export async function saveResults(
-  round: "round1" | "round2",
+  round: VoteRound,
   finalistIds: number[],
   totalVoters: number,
   eliminationData: RCVRound[]
@@ -129,9 +129,10 @@ export async function saveResults(
 
 /**
  * Calculate points for each design in a round.
- * 3 points for 1st choice, 2 for 2nd, 1 for 3rd.
+ * Round 1: 3 points for 1st choice, 2 for 2nd, 1 for 3rd.
+ * Round 2/3: 1 point per vote (single choice).
  */
-export async function getPointsForRound(round: "round1" | "round2"): Promise<Record<number, number>> {
+export async function getPointsForRound(round: VoteRound): Promise<Record<number, number>> {
   const roundVotes = await db
     .select()
     .from(votes)
@@ -140,18 +141,38 @@ export async function getPointsForRound(round: "round1" | "round2"): Promise<Rec
   const points: Record<number, number> = {};
 
   for (const vote of roundVotes) {
-    points[vote.firstChoice] = (points[vote.firstChoice] || 0) + 3;
-    points[vote.secondChoice] = (points[vote.secondChoice] || 0) + 2;
-    points[vote.thirdChoice] = (points[vote.thirdChoice] || 0) + 1;
+    if (round === "round2" || round === "round3") {
+      // Round 2/3: each vote is 1 point
+      points[vote.firstChoice] = (points[vote.firstChoice] || 0) + 1;
+    } else {
+      // Round 1: weighted points
+      points[vote.firstChoice] = (points[vote.firstChoice] || 0) + 3;
+      points[vote.secondChoice] = (points[vote.secondChoice] || 0) + 2;
+      points[vote.thirdChoice] = (points[vote.thirdChoice] || 0) + 1;
+    }
   }
 
   return points;
 }
 
 /**
+ * Get tied design IDs from round 2 results (designs with max points).
+ */
+export async function getTiedDesignIds(): Promise<number[]> {
+  const round2Points = await getPointsForRound("round2");
+  const pointValues = Object.values(round2Points);
+  if (pointValues.length === 0) return [];
+
+  const maxPoints = Math.max(...pointValues);
+  return Object.entries(round2Points)
+    .filter(([, pts]) => pts === maxPoints)
+    .map(([id]) => parseInt(id));
+}
+
+/**
  * Get results for a specific round.
  */
-export async function getResults(round: "round1" | "round2"): Promise<{
+export async function getResults(round: VoteRound): Promise<{
   finalistIds: number[];
   totalVoters: number;
   eliminationData: RCVRound[];
@@ -172,4 +193,11 @@ export async function getResults(round: "round1" | "round2"): Promise<{
     totalVoters: r.totalVoters,
     eliminationData: r.eliminationData ? (JSON.parse(r.eliminationData) as RCVRound[]) : [],
   };
+}
+
+/**
+ * Get all votes for admin voting record.
+ */
+export async function getAllVotes(): Promise<Vote[]> {
+  return db.select().from(votes).orderBy(votes.submittedAt);
 }
