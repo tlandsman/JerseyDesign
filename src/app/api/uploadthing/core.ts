@@ -30,7 +30,7 @@ export const ourFileRouter = {
 
       // 3. Upload the processed image (always JPEG after compression)
       const fileName = file.name.replace(/\.[^.]+$/, ".jpg");
-      const blob = new Blob([strippedBuffer], { type: "image/jpeg" });
+      const blob = new Blob([new Uint8Array(strippedBuffer)], { type: "image/jpeg" });
       const processedFile = new File([blob], fileName, { type: "image/jpeg" });
       const uploadResult = await utapi.uploadFiles([processedFile]);
 
