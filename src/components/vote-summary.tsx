@@ -3,6 +3,7 @@
 import { Design } from "@/lib/designs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 interface VoteSummaryProps {
   rankedDesigns: number[];
@@ -11,6 +12,8 @@ interface VoteSummaryProps {
   isSubmitting: boolean;
   hasVoted: boolean;
   round?: "round1" | "round2" | "round3";
+  voterName: string;
+  onNameChange: (name: string) => void;
 }
 
 export function VoteSummary({
@@ -20,6 +23,8 @@ export function VoteSummary({
   isSubmitting,
   hasVoted,
   round = "round1",
+  voterName,
+  onNameChange,
 }: VoteSummaryProps) {
   // Map design IDs to design numbers (1-indexed position in sorted list)
   const getDesignNumber = (designId: number) => {
@@ -58,12 +63,13 @@ export function VoteSummary({
   }
 
   const isComplete = rankedDesigns.length === requiredSelections;
+  const canSubmit = isComplete && voterName.trim().length > 0;
 
   return (
     <Card className="mt-6">
       <CardContent className="pt-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
+          <div className="flex-1">
             <p className="font-medium">
               {(round === "round2" || round === "round3") ? (
                 <>Your vote: Design #{getDesignNumber(rankedDesigns[0])}</>
@@ -88,13 +94,22 @@ export function VoteSummary({
               Once submitted, your vote cannot be changed.
             </p>
           </div>
-          <Button
-            onClick={onSubmit}
-            disabled={!isComplete || isSubmitting}
-            className="shrink-0"
-          >
-            {isSubmitting ? "Submitting..." : "Submit Vote"}
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Input
+              type="text"
+              placeholder="Your name"
+              value={voterName}
+              onChange={(e) => onNameChange(e.target.value)}
+              className="w-40"
+              disabled={isSubmitting}
+            />
+            <Button
+              onClick={onSubmit}
+              disabled={!canSubmit || isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Vote"}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

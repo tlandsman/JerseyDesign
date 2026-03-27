@@ -17,11 +17,6 @@ export default async function VotesPage() {
     sortedDesigns.map((d, index) => [d.id, index + 1])
   );
 
-  // Create a map of voter token to submitter name
-  const voterNameMap = new Map(
-    designs.map((d) => [d.submitterToken, d.submitterName])
-  );
-
   // Group votes by voter
   const votesByVoter = new Map<string, typeof votes>();
   for (const vote of votes) {
@@ -94,33 +89,49 @@ export default async function VotesPage() {
                 </div>
 
                 {/* Votes table */}
-                <div className="border rounded-lg overflow-hidden">
+                <div className="border rounded-lg overflow-hidden overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-blue-50">
                       <tr>
                         <th className="text-left p-3 font-medium">Voter</th>
-                        <th className="text-center p-3 font-medium">1st (3 pts)</th>
-                        <th className="text-center p-3 font-medium">2nd (2 pts)</th>
-                        <th className="text-center p-3 font-medium">3rd (1 pt)</th>
-                        <th className="text-left p-3 font-medium">Time</th>
+                        {sortedDesigns.map((design, index) => (
+                          <th key={design.id} className="text-center p-3 font-medium whitespace-nowrap">
+                            Design #{index + 1}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {votes.filter(v => v.round === "round1").map((vote) => {
-                        const voterName = voterNameMap.get(vote.voterToken) || "Anonymous";
+                        const voterName = vote.voterName;
                         return (
                           <tr key={vote.id} className="border-t">
                             <td className="p-3">{voterName}</td>
-                            <td className="p-3 text-center">#{designNumberMap.get(vote.firstChoice) || "?"}</td>
-                            <td className="p-3 text-center">#{designNumberMap.get(vote.secondChoice) || "?"}</td>
-                            <td className="p-3 text-center">#{designNumberMap.get(vote.thirdChoice) || "?"}</td>
-                            <td className="p-3 text-sm text-muted-foreground">
-                              {vote.submittedAt.toLocaleString()}
-                            </td>
+                            {sortedDesigns.map((design) => {
+                              let rank = "";
+                              if (vote.firstChoice === design.id) rank = "1st (3 pts)";
+                              else if (vote.secondChoice === design.id) rank = "2nd (2 pts)";
+                              else if (vote.thirdChoice === design.id) rank = "3rd (1 pt)";
+                              return (
+                                <td key={design.id} className="p-3 text-center text-sm whitespace-nowrap">
+                                  {rank}
+                                </td>
+                              );
+                            })}
                           </tr>
                         );
                       })}
                     </tbody>
+                    <tfoot className="bg-blue-100 font-medium">
+                      <tr className="border-t-2">
+                        <td className="p-3">Total</td>
+                        {sortedDesigns.map((design) => (
+                          <td key={design.id} className="p-3 text-center">
+                            {round1Points[design.id] || 0} pts
+                          </td>
+                        ))}
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </>
@@ -154,29 +165,43 @@ export default async function VotesPage() {
                 </div>
 
                 {/* Votes table */}
-                <div className="border rounded-lg overflow-hidden">
+                <div className="border rounded-lg overflow-hidden overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-green-50">
                       <tr>
                         <th className="text-left p-3 font-medium">Voter</th>
-                        <th className="text-center p-3 font-medium">Vote</th>
-                        <th className="text-left p-3 font-medium">Time</th>
+                        {sortedDesigns.map((design, index) => (
+                          <th key={design.id} className="text-center p-3 font-medium whitespace-nowrap">
+                            Design #{index + 1}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {votes.filter(v => v.round === "round2").map((vote) => {
-                        const voterName = voterNameMap.get(vote.voterToken) || "Anonymous";
+                        const voterName = vote.voterName;
                         return (
                           <tr key={vote.id} className="border-t">
                             <td className="p-3">{voterName}</td>
-                            <td className="p-3 text-center font-medium">#{designNumberMap.get(vote.firstChoice) || "?"}</td>
-                            <td className="p-3 text-sm text-muted-foreground">
-                              {vote.submittedAt.toLocaleString()}
-                            </td>
+                            {sortedDesigns.map((design) => (
+                              <td key={design.id} className="p-3 text-center text-sm">
+                                {vote.firstChoice === design.id ? "Vote (1 pt)" : ""}
+                              </td>
+                            ))}
                           </tr>
                         );
                       })}
                     </tbody>
+                    <tfoot className="bg-green-100 font-medium">
+                      <tr className="border-t-2">
+                        <td className="p-3">Total</td>
+                        {sortedDesigns.map((design) => (
+                          <td key={design.id} className="p-3 text-center">
+                            {round2Points[design.id] || 0} pts
+                          </td>
+                        ))}
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </>

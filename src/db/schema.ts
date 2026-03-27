@@ -21,6 +21,7 @@ export type VoteRound = "round1" | "round2";
 export const votes = sqliteTable("votes", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   voterToken: text("voter_token").notNull(),
+  voterName: text("voter_name").notNull(),
   round: text("round").$type<VoteRound>().notNull(),
   firstChoice: integer("first_choice").notNull(),
   secondChoice: integer("second_choice").notNull(),

@@ -26,7 +26,7 @@ export function VotingGallery({
   initialVote,
   points,
 }: VotingGalleryProps) {
-  const { token } = useSubmitter();
+  const { token, name, setName } = useSubmitter();
   const [rankedDesigns, setRankedDesigns] = useState<number[]>([]);
   const [hasVoted, setHasVoted] = useState(initialHasVoted);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,7 +76,7 @@ export function VotingGallery({
   // Per D-07: After submit, success toast, gallery stays visible but disabled
   const handleSubmit = async () => {
     const requiredSelections = round === "round1" ? 3 : 1;
-    if (!token || rankedDesigns.length !== requiredSelections) return;
+    if (!token || rankedDesigns.length !== requiredSelections || !name.trim()) return;
 
     setIsSubmitting(true);
     try {
@@ -87,6 +87,7 @@ export function VotingGallery({
 
       const result = await submitVoteAction(
         token,
+        name.trim(),
         round,
         first,
         second,
@@ -220,6 +221,8 @@ export function VotingGallery({
         isSubmitting={isSubmitting}
         hasVoted={hasVoted}
         round={round}
+        voterName={name}
+        onNameChange={setName}
       />
     </div>
   );

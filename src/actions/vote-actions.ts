@@ -15,6 +15,7 @@ import { getPhase, advancePhase, setPhase } from "@/lib/phase";
 
 const voteSchema = z.object({
   voterToken: z.string().uuid(),
+  voterName: z.string().min(1, "Name is required"),
   round: z.enum(["round1", "round2"]),
   firstChoice: z.number().int().positive(),
   secondChoice: z.number().int().positive(),
@@ -23,6 +24,7 @@ const voteSchema = z.object({
 
 export async function submitVoteAction(
   voterToken: string,
+  voterName: string,
   round: "round1" | "round2",
   firstChoice: number,
   secondChoice: number,
@@ -32,6 +34,7 @@ export async function submitVoteAction(
     // 1. Validate input with zod
     const parsed = voteSchema.safeParse({
       voterToken,
+      voterName: voterName.trim(),
       round,
       firstChoice,
       secondChoice,
@@ -39,7 +42,7 @@ export async function submitVoteAction(
     });
 
     if (!parsed.success) {
-      return { success: false, error: "Invalid vote data" };
+      return { success: false, error: "Please enter your name" };
     }
 
     // 2. Check current phase matches round
@@ -57,6 +60,7 @@ export async function submitVoteAction(
     // 4. Call submitVote (throws on duplicate due to unique constraint)
     await submitVote(
       parsed.data.voterToken,
+      parsed.data.voterName,
       parsed.data.round,
       parsed.data.firstChoice,
       parsed.data.secondChoice,
@@ -149,6 +153,13 @@ export async function resetRoundAction(round: "round1" | "round2"): Promise<void
 
 export async function resetAllAction(): Promise<void> {
   await resetAllVotes();
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function resetVotingAction(): Promise<void> {
+  await resetAllVotes();
+  await setPhase("round1");
   revalidatePath("/");
   revalidatePath("/admin");
 }

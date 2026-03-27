@@ -1,6 +1,6 @@
 import { getPhase, getNextPhase, getPhaseName } from "@/lib/phase";
 import { getPointsForRound } from "@/lib/votes";
-import { advancePhaseFormAction } from "@/actions/vote-actions";
+import { advancePhaseFormAction, resetVotingAction } from "@/actions/vote-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -41,6 +41,13 @@ export async function AdminControls() {
           <p className="text-sm text-muted-foreground text-center">
             Voting complete - no more phases
           </p>
+        )}
+        {currentPhase !== "submit" && (
+          <form action={resetVotingAction}>
+            <Button type="submit" variant="outline" className="w-full">
+              Reset Voting
+            </Button>
+          </form>
         )}
       </CardContent>
     </Card>

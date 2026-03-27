@@ -10,6 +10,7 @@ export type Result = typeof results.$inferSelect;
  */
 export async function submitVote(
   voterToken: string,
+  voterName: string,
   round: VoteRound,
   firstChoice: number,
   secondChoice: number,
@@ -17,6 +18,7 @@ export async function submitVote(
 ): Promise<void> {
   await db.insert(votes).values({
     voterToken,
+    voterName,
     round,
     firstChoice,
     secondChoice,
